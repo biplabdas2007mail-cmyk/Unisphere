@@ -1,0 +1,8 @@
+{
+  "name": "Smart Campus Life Portal",
+  "description": "A comprehensive digital campus platform simplifying everyday life for students and administrators with digital gate passes, facility bookings, smart grievance ticketing, and academic operations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
