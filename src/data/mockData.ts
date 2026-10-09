@@ -18,11 +18,13 @@ import {
 export const DEMO_USERS: Record<string, User> = {
   student: {
     id: 'user_std_101',
-    name: 'Aarav Mohapatra',
-    email: 'aarav.mohapatra@campus.edu',
+    name: 'Biplab Das',
+    email: 'biplab.das@campus.edu',
     role: 'student',
     avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
     department: 'Computer Science & Engineering (B.Tech)',
+    institute: 'Odisha University of Technology and Research (OUTR / Formerly CET Bhubaneswar)',
+    university: 'Biju Patnaik University of Technology (BPUT Rourkela)',
     studentId: '2023CS1082',
     hostelBlock: 'Kharavela Bhawan - Block B (ଖାରବେଳ ହଷ୍ଟେଲ)',
     roomNo: 'B-314',
@@ -36,6 +38,8 @@ export const DEMO_USERS: Record<string, User> = {
     role: 'admin',
     avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
     department: 'Dean of Student Affairs (Odisha Campus)',
+    institute: 'Odisha University of Technology and Research (OUTR Bhubaneswar)',
+    university: 'Biju Patnaik University of Technology (BPUT Rourkela)',
     designation: 'Chief Campus Administrator & Warden In-Charge',
     phone: '+91 674 230 1122'
   }
@@ -331,56 +335,499 @@ export const INITIAL_ANNOUNCEMENTS: Announcement[] = [
   }
 ];
 
+export interface TimetableMetadata {
+  institution: string;
+  portalUrl: string;
+  course: string;
+  branch: string;
+  semester: string;
+  section: string;
+  effectiveFrom: string;
+  totalPeriods: number;
+  coreLectureHall: string;
+}
+
+export const TIMETABLE_METADATA: TimetableMetadata = {
+  institution: 'Rajdhani Engineering College (REC Bhubaneswar) / Roland Institute',
+  portalUrl: 'ims.rec.ac.in/timetable/tt.php?c=1&b=101&sem=3&st=S&s=136',
+  course: 'B.Tech (Degree Engineering)',
+  branch: 'Computer Science & Engineering / Artificial Intelligence (Code 101)',
+  semester: 'Semester 3 (Autumn 2026)',
+  section: 'Section S',
+  effectiveFrom: '07-09-2026',
+  totalPeriods: 10,
+  coreLectureHall: 'Room No.-A304'
+};
+
+export interface SubjectDirectoryItem {
+  code: string;
+  shortName: string;
+  fullName: string;
+  instructor: string;
+  room: string;
+  type: 'Theory' | 'Lab' | 'Training';
+  colorTag: string;
+}
+
+export const TIMETABLE_SUBJECTS_DIRECTORY: SubjectDirectoryItem[] = [
+  {
+    code: 'CS301',
+    shortName: 'DS&AF AI',
+    fullName: 'Data Structures & Applied Foundations of Artificial Intelligence',
+    instructor: 'Aliva Haiburu',
+    room: 'Room No.-A304',
+    type: 'Theory',
+    colorTag: 'indigo'
+  },
+  {
+    code: 'CS302',
+    shortName: 'ORP',
+    fullName: 'Object-Oriented Programming (Java/C++)',
+    instructor: 'FREDRIC EDISON EKKA',
+    room: 'Room No.-A304',
+    type: 'Theory',
+    colorTag: 'blue'
+  },
+  {
+    code: 'CS303',
+    shortName: 'WAD',
+    fullName: 'Web Application Development',
+    instructor: 'Devikrishna Das, TULASHI SETHI',
+    room: 'Room No.-A304',
+    type: 'Theory',
+    colorTag: 'emerald'
+  },
+  {
+    code: 'CS304-L',
+    shortName: 'WAD LAB',
+    fullName: 'Web Application Development Laboratory',
+    instructor: 'Devikrishna Das, TULASHI SETHI',
+    room: 'Room No.-B308-1 (Lab Complex 3rd Floor)',
+    type: 'Lab',
+    colorTag: 'teal'
+  },
+  {
+    code: 'EC301',
+    shortName: 'DE',
+    fullName: 'Digital Electronics & Logic Design',
+    instructor: 'Ritisnigha Das',
+    room: 'Room No.-A304',
+    type: 'Theory',
+    colorTag: 'violet'
+  },
+  {
+    code: 'EC301-L',
+    shortName: 'DE LAB',
+    fullName: 'Digital Electronics Laboratory',
+    instructor: 'Ritisnigha Das',
+    room: 'Room No.-A203 (Electronics Lab Block A)',
+    type: 'Lab',
+    colorTag: 'purple'
+  },
+  {
+    code: 'EE301',
+    shortName: 'EE',
+    fullName: 'Electrical Engineering / Environmental Studies',
+    instructor: 'Pujalin Rout',
+    room: 'Room No.-A304',
+    type: 'Theory',
+    colorTag: 'amber'
+  },
+  {
+    code: 'MA301',
+    shortName: 'Math',
+    fullName: 'Engineering Mathematics - III (Transforms & Discrete Math)',
+    instructor: 'Barsha Bijayini Muduli',
+    room: 'Room No.-A304',
+    type: 'Theory',
+    colorTag: 'rose'
+  },
+  {
+    code: 'TR301',
+    shortName: 'PPT',
+    fullName: 'Pre-Placement Training & Aptitude / Soft Skills',
+    instructor: 'GF PPT (Corporate Training Team)',
+    room: 'Room No.-A304',
+    type: 'Training',
+    colorTag: 'orange'
+  },
+  {
+    code: 'CS302-L',
+    shortName: 'OOP LAB',
+    fullName: 'Object-Oriented Programming Laboratory',
+    instructor: 'FREDRIC EDISON EKKA',
+    room: 'Room No.-A305 (Programming Lab Block A)',
+    type: 'Lab',
+    colorTag: 'cyan'
+  },
+  {
+    code: 'CS301-L',
+    shortName: 'DS LAB',
+    fullName: 'Data Structures Laboratory',
+    instructor: 'ANKITA JENA',
+    room: 'Room No.-A206 / B116',
+    type: 'Lab',
+    colorTag: 'fuchsia'
+  }
+];
+
+export const TIMETABLE_TIME_SLOTS = [
+  { id: 'p1', period: 'P1', time: '09:15 AM - 09:45 AM', isBreak: false },
+  { id: 'p2', period: 'P2', time: '09:45 AM - 10:15 AM', isBreak: false },
+  { id: 'p3', period: 'P3', time: '10:15 AM - 10:45 AM', isBreak: false },
+  { id: 'p4', period: 'P4', time: '10:45 AM - 11:15 AM', isBreak: false },
+  { id: 'tea', period: 'TEA', time: '11:00 AM - 11:15 AM', label: 'Tea Break', isBreak: true },
+  { id: 'p5', period: 'P5', time: '11:30 AM - 12:00 PM', isBreak: false },
+  { id: 'p6', period: 'P6', time: '12:00 PM - 12:30 PM', isBreak: false },
+  { id: 'lunch', period: 'LUNCH', time: '12:30 PM - 01:30 PM', label: 'Lunch Break', isBreak: true },
+  { id: 'p7', period: 'P7', time: '01:30 PM - 02:00 PM', isBreak: false },
+  { id: 'p8', period: 'P8', time: '02:00 PM - 02:30 PM', isBreak: false },
+  { id: 'p9', period: 'P9', time: '02:45 PM - 03:15 PM', isBreak: false },
+  { id: 'p10', period: 'P10', time: '03:15 PM - 03:45 PM', isBreak: false }
+] as const;
+
 export const STUDENT_TIMETABLE: TimetableSlot[] = [
+  // ==================== MONDAY ====================
   {
-    id: 'TT-1',
+    id: 'TT-MON-1',
     courseCode: 'CS301',
-    courseName: 'Design & Analysis of Algorithms',
-    instructor: 'Prof. K. Venkatesh',
-    time: '09:00 - 10:00 AM',
-    room: 'Hall 302, Academic Block A',
+    courseName: 'DS&AF AI(ALL) - Data Structures & Applied Foundations of AI',
+    instructor: 'Aliva Haiburu',
+    time: '09:15 AM - 10:15 AM',
+    room: 'Room No.-A304',
     day: 'Monday',
-    type: 'Lecture'
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P1 - P2'
   },
   {
-    id: 'TT-2',
-    courseCode: 'CS305',
-    courseName: 'Database Management Systems Lab',
-    instructor: 'Dr. Meera Nambiar',
-    time: '10:15 - 12:15 PM',
-    room: 'Software Lab 2, CS Complex',
+    id: 'TT-MON-2',
+    courseCode: 'CS302',
+    courseName: 'ORP(ALL) - Object Oriented Programming',
+    instructor: 'FREDRIC EDISON EKKA',
+    time: '10:15 AM - 11:15 AM',
+    room: 'Room No.-A304',
     day: 'Monday',
-    type: 'Lab'
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P3 - P4',
+    notes: 'Morning Break at 11:00 AM'
   },
   {
-    id: 'TT-3',
-    courseCode: 'CS309',
-    courseName: 'Computer Networks & Security',
-    instructor: 'Prof. Arvind Roy',
-    time: '01:30 - 02:30 PM',
-    room: 'Lecture Hall 104',
+    id: 'TT-MON-3',
+    courseCode: 'CS303',
+    courseName: 'WAD(ALL) - Web Application Development',
+    instructor: 'Devikrishna Das, TULASHI SETHI',
+    time: '11:30 AM - 12:30 PM',
+    room: 'Room No.-A304',
     day: 'Monday',
-    type: 'Lecture'
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P5 - P6'
   },
   {
-    id: 'TT-4',
-    courseCode: 'CS312',
-    courseName: 'Artificial Intelligence Foundations',
-    instructor: 'Dr. Sarah Jenkins',
-    time: '03:00 - 04:00 PM',
-    room: 'Seminar Hall B',
+    id: 'TT-MON-4',
+    courseCode: 'EC301',
+    courseName: 'DE(ALL) - Digital Electronics',
+    instructor: 'Ritisnigha Das',
+    time: '01:30 PM - 02:30 PM',
+    room: 'Room No.-A304',
     day: 'Monday',
-    type: 'Lecture'
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P7 - P8'
   },
   {
-    id: 'TT-5',
-    courseCode: 'HS201',
-    courseName: 'Professional Ethics & IP Rights',
-    instructor: 'Prof. S. Sengupta',
-    time: '09:00 - 10:00 AM',
-    room: 'Hall 101, Academic Block B',
+    id: 'TT-MON-5',
+    courseCode: 'CS302',
+    courseName: 'ORP(ALL) - Object Oriented Programming',
+    instructor: 'FREDRIC EDISON EKKA',
+    time: '02:45 PM - 03:45 PM',
+    room: 'Room No.-A304',
+    day: 'Monday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P9 - P10'
+  },
+
+  // ==================== TUESDAY ====================
+  {
+    id: 'TT-TUE-1',
+    courseCode: 'CS304-L',
+    courseName: 'WAD LAB(ALL) - Web Application Development Lab',
+    instructor: 'Devikrishna Das, TULASHI SETHI',
+    time: '09:15 AM - 11:15 AM',
+    room: 'Room No.-B308-1',
     day: 'Tuesday',
-    type: 'Tutorial'
+    type: 'Lab',
+    batch: 'ALL',
+    periodNumber: 'P1 - P4',
+    notes: '4-Period Full Practical Coding Session'
+  },
+  {
+    id: 'TT-TUE-2',
+    courseCode: 'EE301',
+    courseName: 'EE(ALL) - Electrical / Environmental Engineering',
+    instructor: 'Pujalin Rout',
+    time: '11:30 AM - 12:30 PM',
+    room: 'Room No.-A304',
+    day: 'Tuesday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P5 - P6'
+  },
+  {
+    id: 'TT-TUE-3',
+    courseCode: 'CS302',
+    courseName: 'ORP(ALL) - Object Oriented Programming',
+    instructor: 'FREDRIC EDISON EKKA',
+    time: '01:30 PM - 02:30 PM',
+    room: 'Room No.-A304',
+    day: 'Tuesday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P7 - P8'
+  },
+  {
+    id: 'TT-TUE-4',
+    courseCode: 'CS301',
+    courseName: 'DS&AF AI(ALL) - Data Structures & Applied Foundations of AI',
+    instructor: 'Aliva Haiburu',
+    time: '02:45 PM - 03:45 PM',
+    room: 'Room No.-A304',
+    day: 'Tuesday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P9 - P10'
+  },
+
+  // ==================== WEDNESDAY ====================
+  {
+    id: 'TT-WED-1',
+    courseCode: 'TR301',
+    courseName: 'PPT(ALL) - Pre-Placement Training & Soft Skills',
+    instructor: 'GF PPT',
+    time: '09:15 AM - 11:15 AM',
+    room: 'Room No.-A304',
+    day: 'Wednesday',
+    type: 'Training',
+    batch: 'ALL',
+    periodNumber: 'P1 - P4',
+    notes: 'Campus Recruitment Preparation & Coding Aptitude'
+  },
+  {
+    id: 'TT-WED-2',
+    courseCode: 'CS303',
+    courseName: 'WAD(ALL) - Web Application Development',
+    instructor: 'Devikrishna Das, TULASHI SETHI',
+    time: '11:30 AM - 12:30 PM',
+    room: 'Room No.-A304',
+    day: 'Wednesday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P5 - P6'
+  },
+  {
+    id: 'TT-WED-3',
+    courseCode: 'EE301',
+    courseName: 'EE(ALL) - Electrical / Environmental Engineering',
+    instructor: 'Pujalin Rout',
+    time: '01:30 PM - 02:30 PM',
+    room: 'Room No.-A304',
+    day: 'Wednesday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P7 - P8'
+  },
+  {
+    id: 'TT-WED-4',
+    courseCode: 'MA301',
+    courseName: 'Math(ALL) - Engineering Mathematics - III',
+    instructor: 'Barsha Bijayini Muduli',
+    time: '02:45 PM - 03:45 PM',
+    room: 'Room No.-A304',
+    day: 'Wednesday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P9 - P10'
+  },
+
+  // ==================== THURSDAY ====================
+  {
+    id: 'TT-THU-1',
+    courseCode: 'CS302',
+    courseName: 'ORP(ALL) - Object Oriented Programming',
+    instructor: 'FREDRIC EDISON EKKA',
+    time: '09:15 AM - 10:15 AM',
+    room: 'Room No.-A304',
+    day: 'Thursday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P1 - P2'
+  },
+  {
+    id: 'TT-THU-2-GR1',
+    courseCode: 'EC301-L',
+    courseName: 'DE LAB(GR1) - Digital Electronics Laboratory (Group 1)',
+    instructor: 'Ritisnigha Das',
+    time: '10:15 AM - 12:30 PM',
+    room: 'Room No.-A203',
+    day: 'Thursday',
+    type: 'Lab',
+    batch: 'GR1',
+    periodNumber: 'P3 - P6',
+    notes: 'Group 1 Batch (Tea Break 11:00 AM - 11:15 AM)'
+  },
+  {
+    id: 'TT-THU-2-GR2',
+    courseCode: 'CS302-L',
+    courseName: 'OOP LAB(GR2) - Object-Oriented Programming Lab (Group 2)',
+    instructor: 'FREDRIC EDISON EKKA',
+    time: '10:15 AM - 12:30 PM',
+    room: 'Room No.-A305',
+    day: 'Thursday',
+    type: 'Lab',
+    batch: 'GR2',
+    periodNumber: 'P3 - P6',
+    notes: 'Group 2 Batch (Tea Break 11:00 AM - 11:15 AM)'
+  },
+  {
+    id: 'TT-THU-3',
+    courseCode: 'EC301',
+    courseName: 'DE(ALL) - Digital Electronics',
+    instructor: 'Ritisnigha Das',
+    time: '01:30 PM - 02:30 PM',
+    room: 'Room No.-A304',
+    day: 'Thursday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P7 - P8'
+  },
+  {
+    id: 'TT-THU-4',
+    courseCode: 'MA301',
+    courseName: 'Math(ALL) - Engineering Mathematics - III',
+    instructor: 'Barsha Bijayini Muduli',
+    time: '02:45 PM - 03:45 PM',
+    room: 'Room No.-A304',
+    day: 'Thursday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P9 - P10'
+  },
+
+  // ==================== FRIDAY ====================
+  {
+    id: 'TT-FRI-1',
+    courseCode: 'MA301',
+    courseName: 'Math(ALL) - Engineering Mathematics - III',
+    instructor: 'Barsha Bijayini Muduli',
+    time: '09:15 AM - 10:15 AM',
+    room: 'Room No.-A304',
+    day: 'Friday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P1 - P2'
+  },
+  {
+    id: 'TT-FRI-2',
+    courseCode: 'EC301',
+    courseName: 'DE(ALL) - Digital Electronics',
+    instructor: 'Ritisnigha Das',
+    time: '10:15 AM - 11:15 AM',
+    room: 'Room No.-A304',
+    day: 'Friday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P3 - P4'
+  },
+  {
+    id: 'TT-FRI-3',
+    courseCode: 'CS301',
+    courseName: 'DS&AF AI(ALL) - Data Structures & Applied Foundations of AI',
+    instructor: 'Aliva Haiburu',
+    time: '11:30 AM - 12:30 PM',
+    room: 'Room No.-A304',
+    day: 'Friday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P5 - P6'
+  },
+  {
+    id: 'TT-FRI-4-GR2',
+    courseCode: 'EC301-L',
+    courseName: 'DE LAB(GR2) - Digital Electronics Laboratory (Group 2)',
+    instructor: 'Ritisnigha Das',
+    time: '01:30 PM - 03:45 PM',
+    room: 'Room No.-A203',
+    day: 'Friday',
+    type: 'Lab',
+    batch: 'GR2',
+    periodNumber: 'P7 - P10',
+    notes: 'Group 2 Batch Hardware Lab'
+  },
+  {
+    id: 'TT-FRI-4-GR1',
+    courseCode: 'CS301-L',
+    courseName: 'DS LAB(GR1) - Data Structures Laboratory (Group 1)',
+    instructor: 'ANKITA JENA',
+    time: '01:30 PM - 03:45 PM',
+    room: 'Room No.-A206',
+    day: 'Friday',
+    type: 'Lab',
+    batch: 'GR1',
+    periodNumber: 'P7 - P10',
+    notes: 'Group 1 Batch Algorithms Practice'
+  },
+
+  // ==================== SATURDAY ====================
+  {
+    id: 'TT-SAT-1',
+    courseCode: 'TR301',
+    courseName: 'PPT(ALL) - Pre-Placement Training & Soft Skills',
+    instructor: 'GF PPT',
+    time: '09:15 AM - 11:15 AM',
+    room: 'Room No.-A304',
+    day: 'Saturday',
+    type: 'Training',
+    batch: 'ALL',
+    periodNumber: 'P1 - P4'
+  },
+  {
+    id: 'TT-SAT-2',
+    courseCode: 'EC301',
+    courseName: 'DE(ALL) - Digital Electronics',
+    instructor: 'Ritisnigha Das',
+    time: '11:30 AM - 12:30 PM',
+    room: 'Room No.-A304',
+    day: 'Saturday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P5 - P6'
+  },
+  {
+    id: 'TT-SAT-3',
+    courseCode: 'CS303',
+    courseName: 'WAD(ALL) - Web Application Development',
+    instructor: 'TULASHI SETHI',
+    time: '01:30 PM - 02:30 PM',
+    room: 'Room No.-A304',
+    day: 'Saturday',
+    type: 'Lecture',
+    batch: 'ALL',
+    periodNumber: 'P7 - P8'
+  },
+  {
+    id: 'TT-SAT-4',
+    courseCode: 'CS301-L',
+    courseName: 'DS LAB(GR2) - Data Structures Laboratory (Group 2)',
+    instructor: 'ANKITA JENA',
+    time: '02:45 PM - 03:45 PM',
+    room: 'Room No.-B116',
+    day: 'Saturday',
+    type: 'Lab',
+    batch: 'GR2',
+    periodNumber: 'P9 - P10'
   }
 ];
 

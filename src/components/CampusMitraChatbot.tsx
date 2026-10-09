@@ -189,6 +189,19 @@ export const CampusMitraChatbot: React.FC = () => {
           : language === 'hi'
           ? ['लाइब्रेरी पुस्तक आरक्षित करें', 'फ्लोर लेआउट जांचें']
           : ['Reserve Library Book', 'Check Floor Layout'];
+      } else if (lower.includes('timetable') || lower.includes('time table') || lower.includes('schedule') || lower.includes('routine') || lower.includes('class') || lower.includes('ସମୟସାରଣୀ') || lower.includes('କ୍ଲାସ') || lower.includes('टाइमटेबल') || lower.includes('कक्षा')) {
+        botResponse = language === 'odia'
+          ? 'ସେମେଷ୍ଟର ୩ (Section S) ସମୟସାରଣୀ ସକ୍ରିୟ ଅଛି! ସମସ୍ତ ମୁଖ୍ୟ ଥିଓରୀ କ୍ଲାସ୍ Room No.-A304 ରେ ଅନୁଷ୍ଠିତ ହୁଏ। ସକାଳ ୦୯:୧୫ ରେ ପ୍ରଥମ ପିରିୟଡ୍ ଆରମ୍ଭ ହୁଏ। WAD ଲ୍ୟାବ୍ Room B308-1 ରେ, DE ଲ୍ୟାବ୍ Room A203 ରେ ଏବଂ OOP ଲ୍ୟାବ୍ Room A305 ରେ ଅବସ୍ଥିତ।'
+          : language === 'hi'
+          ? 'सेमेस्टर 3 (सेक्शन S) की समयसारणी सक्रिय है! सभी मुख्य थ्योरी कक्षाएं Room No.-A304 में होती हैं। सुबह 09:15 बजे पहली घंटी शुरू होती है। WAD लैब B308-1 में, DE लैब A203 में और OOP लैब A305 में है।'
+          : language === 'odia_mix'
+          ? 'Semester 3 (Section S) Timetable ସକ୍ରିୟ ଅଛି! ସମସ୍ତ core theory classes Room No.-A304 ରେ ଅନୁଷ୍ଠିତ ହୁଏ। 09:15 AM ରେ class ଆରମ୍ଭ ହୁଏ। WAD Lab Room B308-1 ରେ, DE Lab Room A203 ରେ ଏବଂ OOP Lab Room A305 ରେ ରହିଛି।'
+          : 'Your Semester 3 (Section S, w.e.f. 07-09-2026) Timetable is fully synchronized! Core theory lectures are held in Room No.-A304. Practical labs are in Room B308-1 (WAD Lab), Room A203 (DE Lab), and Room A305 (OOP Lab). First period starts at 09:15 AM.';
+        chips = language === 'odia'
+          ? ['ସମୟସାରଣୀ ଖୋଲନ୍ତୁ', 'ଆଜିର କ୍ଲାସ୍ ଦେଖନ୍ତୁ']
+          : language === 'hi'
+          ? ['टाइमटेबल खोलें', 'आज की कक्षाएं देखें']
+          : ['Open Timetable Hub', "View Today's Classes"];
       } else if (lower.includes('emergency') || lower.includes('security') || lower.includes('hospital') || lower.includes('ambulance') || lower.includes('ଜରୁରୀ') || lower.includes('सुरक्षा') || lower.includes('आपातकालीन')) {
         botResponse = language === 'odia'
           ? 'କ୍ୟାମ୍ପସ ଜରୁରୀକାଳୀନ ହେଲ୍ପଲାଇନ୍: କେନ୍ଦ୍ରୀୟ ସୁରକ୍ଷା ଗେଟ୍: +91 674-230-1999 | ୨୪x୭ ବିଶ୍ୱବିଦ୍ୟାଳୟ ସ୍ୱାସ୍ଥ୍ୟ କେନ୍ଦ୍ର ଏବଂ ଆମ୍ବୁଲାନ୍ସ: +91 674-230-1108 | ରାଜ୍ୟ ପୋଲିସ ନିୟନ୍ତ୍ରଣ: 112।'
@@ -232,16 +245,16 @@ export const CampusMitraChatbot: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 w-[95vw] sm:w-[410px] bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[580px] h-[550px] animate-in slide-in-from-bottom-5 duration-200">
+    <div className="fixed bottom-4 right-4 z-50 w-[95vw] sm:w-[410px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[580px] h-[550px] animate-in slide-in-from-bottom-5 duration-200">
       {/* Header */}
-      <div className="px-4 py-3.5 bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 text-white flex items-center justify-between shrink-0 shadow-xs">
+      <div className="px-4 py-3.5 bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 text-white flex items-center justify-between shrink-0 shadow-xs border-b border-indigo-950 dark:border-slate-800">
         <div className="flex items-center space-x-2.5">
           <div className="p-2 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
             <Bot className="w-5 h-5 text-indigo-300" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-sm tracking-tight">
+              <span className="font-extrabold text-sm tracking-tight text-white">
                 {language === 'odia' ? 'କ୍ୟାମ୍ପସ ମିତ୍ର (Campus Mitra AI)' : language === 'hi' ? 'कैंपस मित्र (Campus Mitra AI)' : language === 'odia_mix' ? 'Campus Mitra (କ୍ୟାମ୍ପସ ମିତ୍ର)' : 'Campus Mitra AI'}
               </span>
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -262,7 +275,7 @@ export const CampusMitraChatbot: React.FC = () => {
       </div>
 
       {/* Chat Messages */}
-      <div className="p-4 flex-1 overflow-y-auto space-y-3.5 bg-slate-50/60">
+      <div className="p-4 flex-1 overflow-y-auto space-y-3.5 bg-slate-50/60 dark:bg-slate-950/70">
         {messages.map((m) => {
           const isBot = m.sender === 'bot';
           return (
@@ -270,13 +283,13 @@ export const CampusMitraChatbot: React.FC = () => {
               <div
                 className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed shadow-2xs ${
                   isBot
-                    ? 'bg-white border border-slate-200 text-slate-800 rounded-tl-xs'
+                    ? 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-tl-xs'
                     : 'bg-indigo-600 text-white rounded-tr-xs'
                 }`}
               >
                 {m.text}
               </div>
-              <span className="text-[9px] text-slate-400 mt-1 px-1">{m.time}</span>
+              <span className="text-[9px] text-slate-400 dark:text-slate-500 mt-1 px-1">{m.time}</span>
 
               {/* Bot Suggestion Chips */}
               {isBot && m.suggestionChips && m.suggestionChips.length > 0 && (
@@ -285,9 +298,9 @@ export const CampusMitraChatbot: React.FC = () => {
                     <button
                       key={idx}
                       onClick={() => handleSend(chip)}
-                      className="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-900 text-[10px] font-semibold border border-indigo-200 transition-colors cursor-pointer flex items-center gap-1"
+                      className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/70 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 text-indigo-900 dark:text-indigo-200 text-[10px] font-semibold border border-indigo-200 dark:border-indigo-800 transition-colors cursor-pointer flex items-center gap-1"
                     >
-                      <Sparkles className="w-3 h-3 text-indigo-500" />
+                      <Sparkles className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
                       <span>{chip}</span>
                     </button>
                   ))}
@@ -298,11 +311,11 @@ export const CampusMitraChatbot: React.FC = () => {
         })}
 
         {isTyping && (
-          <div className="flex items-center space-x-1.5 text-slate-400 text-xs px-2 py-1">
+          <div className="flex items-center space-x-1.5 text-slate-400 dark:text-slate-500 text-xs px-2 py-1">
             <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce" />
             <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:0.2s]" />
             <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:0.4s]" />
-            <span className="text-[11px] text-slate-500 font-medium ml-1">Campus Mitra is analyzing...</span>
+            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium ml-1">Campus Mitra is analyzing...</span>
           </div>
         )}
 
@@ -310,7 +323,7 @@ export const CampusMitraChatbot: React.FC = () => {
       </div>
 
       {/* Input Box */}
-      <div className="p-3 bg-white border-t border-slate-200 shrink-0">
+      <div className="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shrink-0">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -331,7 +344,7 @@ export const CampusMitraChatbot: React.FC = () => {
                 ? 'ପଚାରନ୍ତୁ: Attendance, Outpass, Library...'
                 : 'Ask anything about attendance, certificates, curfew...'
             }
-            className="flex-1 px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="flex-1 px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           <button
             type="submit"
@@ -341,12 +354,12 @@ export const CampusMitraChatbot: React.FC = () => {
             <Send className="w-4 h-4" />
           </button>
         </form>
-        <div className="flex items-center justify-between text-[9px] text-slate-400 mt-1.5 px-1">
+        <div className="flex items-center justify-between text-[9px] text-slate-400 dark:text-slate-500 mt-1.5 px-1">
           <span>Criterion 7 • 🤖 Smart AI Features</span>
           <button 
             type="button" 
             onClick={() => openCriteriaWithTab('crit-smart-features')}
-            className="hover:text-indigo-600 underline cursor-pointer"
+            className="hover:text-indigo-600 dark:hover:text-indigo-400 underline cursor-pointer"
           >
             View Specification
           </button>

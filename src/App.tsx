@@ -51,11 +51,15 @@ const MainCampusContent: React.FC = () => {
       {/* Persistent Evaluator Footer Bar */}
       <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-3.5 px-4 sm:px-6 lg:px-8 text-xs text-slate-500 dark:text-slate-400 pb-20 sm:pb-3.5">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5">
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="font-extrabold text-slate-800 dark:text-slate-200">UniSphere OS</span>
             <span>•</span>
             <span className="font-medium text-slate-600 dark:text-slate-400">
-              PS07: Simplifying Everyday Campus Life for Students & Administrators
+              Simplifying Everyday Campus Life for Students & Administrators
+            </span>
+            <span>•</span>
+            <span className="font-bold text-indigo-600 dark:text-indigo-400">
+              Campus AI Solutions • Team Techinnovators
             </span>
           </div>
 
@@ -65,7 +69,7 @@ const MainCampusContent: React.FC = () => {
               className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-bold flex items-center gap-1 transition-colors cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              <span>PS07 Problem & Impact Framework</span>
+              <span>Campus Problem & Impact Framework</span>
             </button>
 
             {currentUser && (

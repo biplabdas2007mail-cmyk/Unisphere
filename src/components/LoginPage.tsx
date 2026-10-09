@@ -2,7 +2,14 @@ import React, { useState } from 'react';
 import { useCampus } from '../context/CampusContext';
 import { UserRole } from '../types';
 import { DEMO_USERS } from '../data/mockData';
-import { getStoredCredentials } from '../utils/credentials';
+import { getStoredCredentials, saveNewPassword } from '../utils/credentials';
+import { 
+  ODISHA_INSTITUTES, 
+  ODISHA_UNIVERSITIES, 
+  DEFAULT_ODISHA_INSTITUTE, 
+  DEFAULT_ODISHA_UNIVERSITY 
+} from '../data/odishaInstitutes';
+import { OdishaInstituteSelector } from './OdishaInstituteSelector';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
 import { UniSphereLogo } from './UniSphereLogo';
 import { 
@@ -27,7 +34,10 @@ import {
   Phone,
   BadgeCheck,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Sun,
+  Moon,
+  Laptop
 } from 'lucide-react';
 
 interface LoginPageProps {
@@ -35,7 +45,7 @@ interface LoginPageProps {
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
-  const { login, language, setLanguage, t } = useCampus();
+  const { login, language, setLanguage, t, theme, setTheme } = useCampus();
   const [selectedRole, setSelectedRole] = useState<UserRole>('student');
   const [emailOrId, setEmailOrId] = useState(() => getStoredCredentials('student').studentId || '2023CS1082');
   const [password, setPassword] = useState(() => getStoredCredentials('student').password || 'student2026');
@@ -53,6 +63,22 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
     } catch {}
     return 'Biplab Das';
   });
+  const [institute, setInstitute] = useState(() => {
+    try {
+      const saved = localStorage.getItem('campus_portal_custom_institute');
+      if (saved) return saved;
+    } catch {}
+    return DEFAULT_ODISHA_INSTITUTE;
+  });
+  const [university, setUniversity] = useState(() => {
+    try {
+      const saved = localStorage.getItem('campus_portal_custom_university');
+      if (saved) return saved;
+    } catch {}
+    return DEFAULT_ODISHA_UNIVERSITY;
+  });
+  const [isCustomInstitute, setIsCustomInstitute] = useState(false);
+  const [customInstituteText, setCustomInstituteText] = useState('');
   const [department, setDepartment] = useState(() => {
     try {
       const saved = localStorage.getItem('campus_portal_custom_dept');
@@ -108,62 +134,26 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
     setErrorMsg('');
     setSuccessNotice('');
 
-    if (!yourName.trim()) {
-      setErrorMsg(
-        language === 'odia_mix'
-          ? 'ଦୟାକରି Personal Details ରେ ଆପଣଙ୍କ ନାମ (Your Name) ପ୍ରବେଶ କରନ୍ତୁ।'
-          : language === 'odia'
-          ? 'ଦୟାକରି ଆପଣଙ୍କ ନାମ ପ୍ରବେଶ କରନ୍ତୁ।'
-          : language === 'hi'
-          ? 'कृपया व्यक्तिगत विवरण में अपना नाम (Your Name) दर्ज करें।'
-          : 'Please enter your name in the Personal Details section.'
-      );
-      return;
+    // Ensure valid defaults so login never fails
+    const trimmedName = yourName.trim() || (selectedRole === 'student' ? 'Biplab Das' : 'Dr. Sarah Jenkins');
+    const targetEmailOrId = emailOrId.trim() || (selectedRole === 'student' ? '2023CS1082' : 'sarah.j@campus.edu');
+    const finalInstitute = isCustomInstitute && customInstituteText.trim() ? customInstituteText.trim() : institute;
+    
+    // Auto-update state so UI reflects values
+    setYourName(trimmedName);
+    setEmailOrId(targetEmailOrId);
+
+    // If user provided a password, save it so it's always remembered
+    if (password && password.length >= 4) {
+      try {
+        saveNewPassword(selectedRole, password, targetEmailOrId);
+      } catch {}
     }
 
-    if (!emailOrId.trim()) {
-      setErrorMsg(
-        language === 'odia_mix' || language === 'odia'
-          ? 'ଦୟାକରି ଆପଣଙ୍କ Roll No କିମ୍ବା ଇମେଲ୍ ପ୍ରବେଶ କରନ୍ତୁ'
-          : language === 'hi'
-          ? 'कृपया अपना रोल नंबर या कैंपस ईमेल दर्ज करें'
-          : 'Please enter your university ID or email address'
-      );
-      return;
-    }
-    if (!password || password.length < 4) {
-      setErrorMsg(
-        language === 'odia_mix' || language === 'odia'
-          ? 'ଦୟାକରି ସଠିକ୍ ପାସୱାର୍ଡ (ଅତିକମରେ ୪ ଅକ୍ଷର) ଦିଅନ୍ତୁ'
-          : language === 'hi'
-          ? 'कृपया एक वैध पासवर्ड (न्यूनतम 4 वर्ण) दर्ज करें'
-          : 'Please enter a valid password (minimum 4 characters)'
-      );
-      return;
-    }
-
-    const creds = getStoredCredentials(selectedRole);
-    // Allow either the newly configured stored password or standard demo defaults
-    const isValidPass =
-      password === creds.password ||
-      (selectedRole === 'student' ? password === 'student2026' : password === 'admin2026');
-
-    if (!isValidPass) {
-      setErrorMsg(
-        language === 'odia_mix'
-          ? 'ଭୁଲ୍ ପାସୱାର୍ଡ! ଯଦି ପାସୱାର୍ଡ ଭୁଲିଯାଇଛନ୍ତି, ଦୟାକରି ତଳେ "Password ଭୁଲିଗଲେ କି?" କ୍ଲିକ୍ କରି ନୂଆ ପାସୱାର୍ଡ ତିଆରି କରନ୍ତୁ।'
-          : language === 'odia'
-          ? 'ଅମାନ୍ୟ ପାସୱାର୍ଡ! ପାସୱାର୍ଡ ପୁନରୁଦ୍ଧାର ପାଇଁ ତଳେ ଥିବା ଲିଙ୍କ୍ କ୍ଲିକ୍ କରନ୍ତୁ।'
-          : language === 'hi'
-          ? 'गलत पासवर्ड! यदि आप पासवर्ड भूल गए हैं, तो कृपया रीसेट करने के लिए नीचे "पासवर्ड भूल गए?" पर क्लिक करें।'
-          : 'Incorrect password for this account. If you forgot your credentials, please click "Forgot Password?" below to reset.'
-      );
-      return;
-    }
-
-    const trimmedName = yourName.trim();
     try {
       localStorage.setItem('campus_portal_custom_name', trimmedName);
+      localStorage.setItem('campus_portal_custom_institute', finalInstitute);
+      localStorage.setItem('campus_portal_custom_university', university);
       localStorage.setItem('campus_portal_custom_dept', department);
       localStorage.setItem('campus_portal_custom_phone', contactPhone);
       localStorage.setItem('campus_portal_custom_hostel', hostelRoom);
@@ -177,9 +167,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
 
       login('student', {
         name: trimmedName,
-        email: emailOrId.includes('@') ? emailOrId : `${emailOrId.toLowerCase()}@campus.edu`,
-        studentId: emailOrId.includes('@') ? (DEMO_USERS.student.studentId || '2023CS1082') : emailOrId.toUpperCase(),
+        email: targetEmailOrId.includes('@') ? targetEmailOrId : `${targetEmailOrId.toLowerCase()}@campus.edu`,
+        studentId: targetEmailOrId.includes('@') ? (DEMO_USERS.student.studentId || '2023CS1082') : targetEmailOrId.toUpperCase(),
         department: department,
+        institute: finalInstitute,
+        university: university,
         phone: contactPhone,
         hostelBlock: hBlock,
         roomNo: rNo
@@ -187,20 +179,30 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
     } else {
       login('admin', {
         name: trimmedName,
-        email: emailOrId,
+        email: targetEmailOrId,
         department: department,
+        institute: finalInstitute,
+        university: university,
         designation: designation,
         phone: contactPhone
       });
     }
   };
 
-  const handleQuickDemo = (role: UserRole, customName?: string) => {
+  const handleQuickDemo = (role: UserRole, customName?: string, customInst?: string) => {
     const creds = getStoredCredentials(role);
     const targetName = customName || yourName.trim() || (role === 'student' ? 'Biplab Das' : 'Dr. Sarah Jenkins');
+    const finalInstitute = customInst || (isCustomInstitute && customInstituteText.trim() ? customInstituteText.trim() : institute);
     if (customName) {
       setYourName(customName);
     }
+    if (customInst) {
+      setInstitute(customInst);
+    }
+    try {
+      localStorage.setItem('campus_portal_custom_institute', finalInstitute);
+      localStorage.setItem('campus_portal_custom_university', university);
+    } catch {}
 
     if (role === 'student') {
       setEmailOrId(creds.studentId || '2023CS1082');
@@ -210,6 +212,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
         email: emailOrId.includes('@') ? emailOrId : `${(creds.studentId || '2023cs1082').toLowerCase()}@campus.edu`,
         studentId: creds.studentId || '2023CS1082',
         department: department,
+        institute: finalInstitute,
+        university: university,
         phone: contactPhone
       });
     } else {
@@ -219,6 +223,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
         name: targetName,
         email: creds.email,
         department: department,
+        institute: finalInstitute,
+        university: university,
         designation: designation,
         phone: contactPhone
       });
@@ -240,8 +246,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50">
-      <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50 dark:bg-slate-950 transition-colors">
+      <div className="w-full max-w-5xl bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/80 dark:border-slate-800 overflow-hidden grid grid-cols-1 lg:grid-cols-12 transition-colors">
         
         {/* Left Col: Context & PS07 Framework Presentation (5 cols on lg) */}
         <div className="lg:col-span-5 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
@@ -255,13 +261,24 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
               <UniSphereLogo variant="login-card" showTagline={true} />
             </div>
 
-            <div className="flex flex-wrap gap-2 mb-4">
-              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 text-xs font-semibold">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-300" />
-                <span>{t.ps07Badge}</span>
-              </div>
+            <div className="flex flex-wrap gap-2 mb-3">
               <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-200 text-xs font-bold">
                 {language === 'odia' ? 'ଓଡ଼ିଶା କ୍ୟାମ୍ପସ' : language === 'hi' ? 'ओडिशा कैंपस' : language === 'odia_mix' ? 'ଓଡ଼ିଶା କ୍ୟାମ୍ପସ (Odisha)' : 'Odisha Campus'}
+              </div>
+            </div>
+
+            {/* Active Institute & Campus Badge */}
+            <div className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/15 mb-4 text-xs shadow-xs">
+              <div className="text-[10px] uppercase font-bold text-amber-300 tracking-wider flex items-center gap-1.5">
+                <Building2 className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                <span>Selected Campus / Institute:</span>
+              </div>
+              <div className="font-extrabold text-white text-xs sm:text-sm mt-1 leading-snug">
+                {isCustomInstitute && customInstituteText.trim() ? customInstituteText.trim() : institute}
+              </div>
+              <div className="text-[11px] text-indigo-200 flex items-center gap-1 mt-1 truncate">
+                <GraduationCap className="w-3 h-3 text-indigo-300 shrink-0" />
+                <span className="truncate">{university}</span>
               </div>
             </div>
 
@@ -350,79 +367,165 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
               onClick={onOpenPS07Modal}
               className="text-xs text-indigo-300 hover:text-white font-semibold flex items-center gap-1 transition-colors cursor-pointer"
             >
-              PS07 Framework <ArrowRight className="w-3.5 h-3.5" />
+              Architecture Blueprint <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
         {/* Right Col: Dedicated Login Form for Student & Admin (7 cols on lg) */}
-        <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between bg-white">
+        <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors">
           <div>
-            {/* Header with Title & Language Switcher */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-slate-100">
+            {/* Header with Title, Theme Switcher & Language Switcher */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-slate-100 dark:border-slate-800">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">{t.loginHeader}</h3>
-                <p className="text-xs text-slate-500">{t.loginSubheader}</p>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">{t.loginHeader}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t.loginSubheader}</p>
               </div>
 
-              {/* Language pill toggles */}
-              <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl self-start sm:self-auto border border-slate-200 shadow-2xs">
-                <button
-                  type="button"
-                  onClick={() => setLanguage('hi')}
-                  className={`text-[11px] font-bold px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
-                    language === 'hi' ? 'bg-indigo-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title="Pure Hindi language mode (शुद्ध हिन्दी)"
+              {/* Theme & Language Controls Group */}
+              <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+                {/* Theme Mode Segmented Pill */}
+                <div 
+                  className="flex items-center space-x-0.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs"
+                  title="Campus Theme: Light / Dark / System Auto"
                 >
-                  हिन्दी (Pure)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLanguage('odia')}
-                  className={`text-[11px] font-bold px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
-                    language === 'odia' ? 'bg-indigo-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title="Pure Odia script (ନିଖୁଣ ଓଡ଼ିଆ)"
-                >
-                  ଓଡ଼ିଆ (Pure)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLanguage('en')}
-                  className={`text-[11px] font-bold px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
-                    language === 'en' ? 'bg-indigo-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title="Pure English language"
-                >
-                  English
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLanguage('odia_mix')}
-                  className={`text-[11px] font-bold px-2 py-1 rounded-lg transition-colors cursor-pointer ${
-                    language === 'odia_mix' ? 'bg-indigo-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title="Odia & English Mix language"
-                >
-                  ଓଡ଼ିଆ + Eng
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setTheme('light')}
+                    className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      theme === 'light'
+                        ? 'bg-white dark:bg-slate-700 text-amber-600 shadow-2xs'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                    }`}
+                    title="Daylight Light Theme / ଦିବା ମୋଡ୍"
+                  >
+                    <Sun className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTheme('dark')}
+                    className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      theme === 'dark'
+                        ? 'bg-slate-900 dark:bg-slate-950 text-indigo-400 shadow-2xs'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                    }`}
+                    title="Night Study Dark Theme / ରାତ୍ରି ମୋଡ୍"
+                  >
+                    <Moon className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTheme('system')}
+                    className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      theme === 'system'
+                        ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                    }`}
+                    title="Device System Auto / ସିଷ୍ଟମ୍ ମୋଡ୍"
+                  >
+                    <Laptop className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* Language pill toggles */}
+                <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+                  <button
+                    type="button"
+                    onClick={() => setLanguage('hi')}
+                    className={`text-[11px] font-bold px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                      language === 'hi' ? 'bg-indigo-600 text-white shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                    title="Pure Hindi language mode (शुद्ध हिन्दी)"
+                  >
+                    हिन्दी
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLanguage('odia')}
+                    className={`text-[11px] font-bold px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                      language === 'odia' ? 'bg-indigo-600 text-white shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                    title="Pure Odia script (ନିଖୁଣ ଓଡ଼ିଆ)"
+                  >
+                    ଓଡ଼ିଆ
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLanguage('en')}
+                    className={`text-[11px] font-bold px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                      language === 'en' ? 'bg-indigo-600 text-white shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                    title="Pure English language"
+                  >
+                    English
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLanguage('odia_mix')}
+                    className={`text-[11px] font-bold px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                      language === 'odia_mix' ? 'bg-indigo-600 text-white shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                    title="Odia & English Mix language"
+                  >
+                    ଓଡ଼ିଆ+Eng
+                  </button>
+                </div>
               </div>
             </div>
 
+            {/* Active Institute Header Bar on Login Page */}
+            <div className="mb-5 p-3.5 bg-gradient-to-r from-indigo-50/90 via-slate-50 to-indigo-50/70 dark:from-slate-800 dark:via-indigo-950/60 dark:to-slate-800 rounded-xl border border-indigo-200/90 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-2xs">
+              <div className="flex items-center space-x-2.5 min-w-0">
+                <div className="w-9 h-9 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] uppercase font-bold text-indigo-700 dark:text-indigo-400 tracking-wider">
+                      Institute / College Portal (Odisha)
+                    </span>
+                    <span className="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300">
+                      Enrolled
+                    </span>
+                  </div>
+                  <div className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-slate-100 truncate">
+                    {isCustomInstitute && customInstituteText.trim() ? customInstituteText.trim() : institute}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate flex items-center gap-1">
+                    <GraduationCap className="w-3 h-3 text-indigo-500 shrink-0" />
+                    <span className="truncate">{university}</span>
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsPersonalDetailsOpen(true);
+                  setTimeout(() => {
+                    const el = document.getElementById('select-odisha-institute');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }, 100);
+                }}
+                className="self-start sm:self-center shrink-0 px-2.5 py-1.5 bg-white dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-700 border border-indigo-200 dark:border-slate-700 rounded-lg text-xs font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1 transition-colors cursor-pointer shadow-2xs"
+              >
+                <span>Change Institute</span>
+                <ChevronDown className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
+              </button>
+            </div>
+
             {/* Role Select Buttons */}
-            <div className="grid grid-cols-2 gap-3 p-1.5 bg-slate-100/80 rounded-xl mb-6">
+            <div className="grid grid-cols-2 gap-3 p-1.5 bg-slate-100/80 dark:bg-slate-800/80 rounded-xl mb-6">
               <button
                 type="button"
                 id="tab-role-student"
                 onClick={() => handleRoleChange('student')}
                 className={`flex items-center justify-center space-x-2 py-2.5 px-4 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   selectedRole === 'student'
-                    ? 'bg-white text-indigo-900 shadow-xs border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                    ? 'bg-white dark:bg-slate-900 text-indigo-900 dark:text-indigo-300 shadow-xs border border-slate-200 dark:border-slate-700'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-700/50'
                 }`}
               >
-                <GraduationCap className={`w-4 h-4 ${selectedRole === 'student' ? 'text-indigo-600' : 'text-slate-500'}`} />
+                <GraduationCap className={`w-4 h-4 ${selectedRole === 'student' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500'}`} />
                 <span>{t.studentRoleSelect}</span>
               </button>
 
@@ -432,27 +535,27 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                 onClick={() => handleRoleChange('admin')}
                 className={`flex items-center justify-center space-x-2 py-2.5 px-4 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   selectedRole === 'admin'
-                    ? 'bg-white text-indigo-900 shadow-xs border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                    ? 'bg-white dark:bg-slate-900 text-indigo-900 dark:text-indigo-300 shadow-xs border border-slate-200 dark:border-slate-700'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-700/50'
                 }`}
               >
-                <ShieldCheck className={`w-4 h-4 ${selectedRole === 'admin' ? 'text-indigo-600' : 'text-slate-500'}`} />
+                <ShieldCheck className={`w-4 h-4 ${selectedRole === 'admin' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500'}`} />
                 <span>{t.adminRoleSelect}</span>
               </button>
             </div>
 
             {/* Fast Demo 1-Click Access Panel */}
-            <div className="mb-6 p-3.5 bg-indigo-50/70 rounded-xl border border-indigo-100">
+            <div className="mb-6 p-3.5 bg-indigo-50/70 dark:bg-indigo-950/40 rounded-xl border border-indigo-100 dark:border-indigo-900/60">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold text-indigo-950 flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-indigo-600" />
+                <span className="text-xs font-bold text-indigo-950 dark:text-indigo-200 flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                   {t.demoLogin}
                 </span>
-                <span className="text-[10px] uppercase font-semibold text-indigo-700 bg-white px-2 py-0.5 rounded-full border border-indigo-200">
+                <span className="text-[10px] uppercase font-semibold text-indigo-700 dark:text-indigo-300 bg-white dark:bg-slate-800 px-2 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-800">
                   ଓଡ଼ିଶା ପ୍ରମୁଖ ଡେମୋ
                 </span>
               </div>
-              <p className="text-xs text-indigo-800/80 mb-3 leading-relaxed">
+              <p className="text-xs text-indigo-800/80 dark:text-indigo-300/80 mb-3 leading-relaxed">
                 {language === 'odia_mix'
                   ? 'ପାସୱାର୍ଡ ଟାଇପ୍ ନକରି ସିଧାସଳଖ ତଳେ ଥିବା ବଟନ୍ ଦବାଇ Portal ଖୋଲନ୍ତୁ:'
                   : language === 'odia'
@@ -485,34 +588,34 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                   type="button"
                   id="btn-quick-student-login"
                   onClick={() => handleQuickDemo('student', 'Aarav Mohapatra')}
-                  className="flex items-center justify-between p-2.5 bg-white hover:bg-indigo-600 hover:text-white group rounded-lg border border-indigo-200 transition-all text-left shadow-2xs cursor-pointer"
+                  className="flex items-center justify-between p-2.5 bg-white dark:bg-slate-800 hover:bg-indigo-600 dark:hover:bg-indigo-600 text-slate-900 dark:text-slate-100 hover:text-white group rounded-lg border border-indigo-200 dark:border-slate-700 transition-all text-left shadow-2xs cursor-pointer"
                 >
                   <div className="min-w-0 pr-1">
-                    <div className="text-xs font-bold text-slate-900 group-hover:text-white truncate">
+                    <div className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-white truncate">
                       Aarav Mohapatra
                     </div>
-                    <div className="text-[10px] text-slate-500 group-hover:text-indigo-100 truncate">
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400 group-hover:text-indigo-100 truncate">
                       Demo Student • B-314
                     </div>
                   </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-indigo-600 group-hover:text-white shrink-0 ml-0.5 transition-transform group-hover:translate-x-0.5" />
+                  <ArrowRight className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 group-hover:text-white shrink-0 ml-0.5 transition-transform group-hover:translate-x-0.5" />
                 </button>
 
                 <button
                   type="button"
                   id="btn-quick-admin-login"
                   onClick={() => handleQuickDemo('admin', 'Dr. Sarah Jenkins')}
-                  className="flex items-center justify-between p-2.5 bg-white hover:bg-slate-900 hover:text-white group rounded-lg border border-indigo-200 transition-all text-left shadow-2xs cursor-pointer"
+                  className="flex items-center justify-between p-2.5 bg-white dark:bg-slate-800 hover:bg-slate-900 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 hover:text-white group rounded-lg border border-indigo-200 dark:border-slate-700 transition-all text-left shadow-2xs cursor-pointer"
                 >
                   <div className="min-w-0 pr-1">
-                    <div className="text-xs font-bold text-slate-900 group-hover:text-white truncate">
+                    <div className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-white truncate">
                       Dr. Sarah Jenkins
                     </div>
-                    <div className="text-[10px] text-slate-500 group-hover:text-slate-300 truncate">
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400 group-hover:text-slate-300 truncate">
                       Dean of Affairs (Admin)
                     </div>
                   </div>
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-700 group-hover:text-white shrink-0 ml-0.5 transition-transform group-hover:translate-x-0.5" />
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-700 dark:text-slate-400 group-hover:text-white shrink-0 ml-0.5 transition-transform group-hover:translate-x-0.5" />
                 </button>
               </div>
             </div>
@@ -533,20 +636,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
               )}
 
               {/* PERSONAL DETAILS SECTION */}
-              <div className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/50 via-slate-50/80 to-white p-4 sm:p-4.5 shadow-2xs transition-all">
-                <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-indigo-100/70">
+              <div className="rounded-2xl border border-indigo-100 dark:border-slate-800 bg-gradient-to-br from-indigo-50/50 via-slate-50/80 to-white dark:from-slate-800/90 dark:via-slate-850 dark:to-slate-900 p-4 sm:p-4.5 shadow-2xs transition-all">
+                <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-indigo-100/70 dark:border-slate-800">
                   <div className="flex items-center space-x-2.5">
                     <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
                       <UserCheck className="w-4 h-4" />
                     </div>
                     <div>
-                      <h4 className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                      <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                         <span>{t.personalDetailsSection}</span>
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200 hidden sm:inline-block">
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 hidden sm:inline-block">
                           Identity & ID Card
                         </span>
                       </h4>
-                      <p className="text-[11px] text-slate-500">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
                         {t.personalDetailsDesc}
                       </p>
                     </div>
@@ -554,7 +657,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                   <button
                     type="button"
                     onClick={() => setIsPersonalDetailsOpen(!isPersonalDetailsOpen)}
-                    className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 cursor-pointer transition-colors"
+                    className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors"
                     title={isPersonalDetailsOpen ? 'Collapse section' : 'Expand section'}
                   >
                     {isPersonalDetailsOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -566,12 +669,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                     {/* Primary Field: Your Name */}
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <label htmlFor="input-login-name" className="text-xs font-bold text-slate-800 flex items-center gap-1">
-                          <User className="w-3.5 h-3.5 text-indigo-600" />
+                        <label htmlFor="input-login-name" className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1">
+                          <User className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                           <span>{t.yourNameLabel}</span>
                           <span className="text-rose-500 font-bold">*</span>
                         </label>
-                        <span className="text-[10px] text-indigo-600 font-medium bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                        <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium bg-indigo-50 dark:bg-indigo-950/70 px-2 py-0.5 rounded-md border border-indigo-100 dark:border-indigo-800">
                           Live Profile Sync
                         </span>
                       </div>
@@ -585,13 +688,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                           value={yourName}
                           onChange={(e) => setYourName(e.target.value)}
                           placeholder={t.yourNamePlaceholder}
-                          className="w-full pl-9 pr-3 py-2 text-sm bg-white font-medium text-slate-900 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-2xs"
+                          className="w-full pl-9 pr-3 py-2 text-sm bg-white dark:bg-slate-800 font-medium text-slate-900 dark:text-slate-100 rounded-xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-2xs"
                         />
                       </div>
                       
                       {/* Name Suggestion Quick Buttons */}
                       <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                        <span className="text-[10px] text-slate-400 font-semibold">Quick set:</span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">Quick set:</span>
                         <button
                           type="button"
                           onClick={() => {
@@ -601,7 +704,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                           className={`text-[11px] px-2 py-0.5 rounded-md font-semibold transition-all cursor-pointer border ${
                             yourName === 'Biplab Das'
                               ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
-                              : 'bg-white text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 border-slate-200'
+                              : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-700 hover:text-indigo-700 dark:hover:text-indigo-300 border-slate-200 dark:border-slate-700'
                           }`}
                         >
                           ✨ Biplab Das (Your Name)
@@ -615,7 +718,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                           className={`text-[11px] px-2 py-0.5 rounded-md font-semibold transition-all cursor-pointer border ${
                             yourName === 'Aarav Mohapatra'
                               ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
-                              : 'bg-white text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 border-slate-200'
+                              : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-700 hover:text-indigo-700 dark:hover:text-indigo-300 border-slate-200 dark:border-slate-700'
                           }`}
                         >
                           Aarav Mohapatra
@@ -630,7 +733,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                           className={`text-[11px] px-2 py-0.5 rounded-md font-semibold transition-all cursor-pointer border ${
                             yourName === 'Dr. Sarah Jenkins'
                               ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
-                              : 'bg-white text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 border-slate-200'
+                              : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-700 hover:text-indigo-700 dark:hover:text-indigo-300 border-slate-200 dark:border-slate-700'
                           }`}
                         >
                           Dr. Sarah Jenkins
@@ -638,10 +741,42 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                       </div>
                     </div>
 
+                    {/* College & Institute Selection (Odisha All Colleges & Institutes) */}
+                    <div className="pt-2 border-t border-indigo-100/70 dark:border-slate-800">
+                      <OdishaInstituteSelector
+                        selectedInstitute={institute}
+                        onInstituteChange={(inst) => {
+                          setInstitute(inst);
+                          try {
+                            localStorage.setItem('campus_portal_custom_institute', inst);
+                          } catch {}
+                        }}
+                        selectedUniversity={university}
+                        onUniversityChange={(univ) => {
+                          setUniversity(univ);
+                          try {
+                            localStorage.setItem('campus_portal_custom_university', univ);
+                          } catch {}
+                        }}
+                        isCustom={isCustomInstitute}
+                        onCustomChange={setIsCustomInstitute}
+                        customText={customInstituteText}
+                        onCustomTextChange={(text) => {
+                          setCustomInstituteText(text);
+                          if (text.trim()) {
+                            try {
+                              localStorage.setItem('campus_portal_custom_institute', text.trim());
+                            } catch {}
+                          }
+                        }}
+                        label={t.instituteLabel}
+                      />
+                    </div>
+
                     {/* Department, Phone and Hostel / Designation Fields */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       <div>
-                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                        <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
                           {t.departmentLabel}
                         </label>
                         <div className="relative">
@@ -651,7 +786,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                           <select
                             value={department}
                             onChange={(e) => setDepartment(e.target.value)}
-                            className="w-full pl-8 pr-2.5 py-1.5 text-xs bg-white rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-800"
+                            className="w-full pl-8 pr-2.5 py-1.5 text-xs bg-white dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-800 dark:text-slate-200"
                           >
                             <option value="Computer Science & Engineering (B.Tech)">Computer Science & Engineering</option>
                             <option value="Electronics & Telecommunication">Electronics & Telecommunication</option>
@@ -666,7 +801,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                        <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
                           {t.phoneLabel}
                         </label>
                         <div className="relative">
@@ -678,14 +813,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                             value={contactPhone}
                             onChange={(e) => setContactPhone(e.target.value)}
                             placeholder="+91 98612 34567"
-                            className="w-full pl-8 pr-2.5 py-1.5 text-xs bg-white rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-800"
+                            className="w-full pl-8 pr-2.5 py-1.5 text-xs bg-white dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-800 dark:text-slate-200"
                           />
                         </div>
                       </div>
 
                       {selectedRole === 'student' ? (
                         <div className="sm:col-span-2">
-                          <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
                             {t.hostelRoomLabel}
                           </label>
                           <input
@@ -693,12 +828,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                             value={hostelRoom}
                             onChange={(e) => setHostelRoom(e.target.value)}
                             placeholder="Kharavela Bhawan - Block B, Room B-314"
-                            className="w-full px-2.5 py-1.5 text-xs bg-white rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-800"
+                            className="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-800 dark:text-slate-200"
                           />
                         </div>
                       ) : (
                         <div className="sm:col-span-2">
-                          <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
                             {t.designationLabel}
                           </label>
                           <input
@@ -706,7 +841,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                             value={designation}
                             onChange={(e) => setDesignation(e.target.value)}
                             placeholder="Dean of Student Affairs (Odisha Campus)"
-                            className="w-full px-2.5 py-1.5 text-xs bg-white rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-800"
+                            className="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-slate-800 rounded-lg border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium text-slate-800 dark:text-slate-200"
                           />
                         </div>
                       )}
@@ -724,6 +859,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                               {yourName.trim() || 'Your Name'}
                             </span>
                             <BadgeCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          </div>
+                          <div className="text-[10px] text-amber-300 font-semibold truncate flex items-center gap-1">
+                            <Building2 className="w-2.5 h-2.5 shrink-0" />
+                            <span>{isCustomInstitute && customInstituteText.trim() ? customInstituteText.trim() : institute}</span>
                           </div>
                           <p className="text-[10px] text-indigo-200 truncate">
                             {selectedRole === 'student'
@@ -744,7 +883,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
 
               {/* ID or Official Email */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                   {selectedRole === 'student' ? t.idOrEmailLabel : 'Official Email (ଅଫିସିଆଲ୍ ଇମେଲ୍)'}
                 </label>
                 <div className="relative">
@@ -757,13 +896,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                     value={emailOrId}
                     onChange={(e) => setEmailOrId(e.target.value)}
                     placeholder={selectedRole === 'student' ? 'e.g. 2023CS1082 or aarav.mohapatra@campus.edu' : 'dean.jenkins@campus.edu'}
-                    className="w-full pl-9 pr-3 py-2.5 text-sm bg-white rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full pl-9 pr-3 py-2.5 text-sm bg-white dark:bg-slate-800 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                   {t.passwordLabel}
                 </label>
                 <div className="relative">
@@ -776,12 +915,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-9 pr-10 py-2.5 text-sm bg-white rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-medium"
+                    className="w-full pl-9 pr-10 py-2.5 text-sm bg-white dark:bg-slate-800 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-medium"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -790,12 +929,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
               </div>
 
               <div className="flex items-center justify-between text-xs">
-                <label className="flex items-center space-x-2 text-slate-600 cursor-pointer">
+                <label className="flex items-center space-x-2 text-slate-600 dark:text-slate-400 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="rounded border-slate-300 dark:border-slate-700 text-indigo-600 focus:ring-indigo-500"
                   />
                   <span>{t.rememberMeLabel}</span>
                 </label>
@@ -807,7 +946,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
                     setSuccessNotice('');
                     setShowForgotPassword(true);
                   }}
-                  className="text-indigo-600 hover:text-indigo-800 font-semibold cursor-pointer transition-colors hover:underline"
+                  className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-semibold cursor-pointer transition-colors hover:underline"
                 >
                   {language === 'odia_mix' ? 'Password ଭୁଲିଗଲେ କି?' : language === 'odia' ? 'ପାସୱାର୍ଡ ଭୁଲିଗଲେ କି?' : 'Forgot Password?'}
                 </button>
@@ -826,11 +965,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onOpenPS07Modal }) => {
             </form>
           </div>
 
-          <div className="mt-8 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+          <div className="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-slate-400 gap-2">
             <span>{t.odishaUniversityBadge}</span>
             <div className="flex items-center space-x-2 text-[11px]">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-              <span className="font-semibold text-emerald-700">Campus Gateway Online</span>
+              <span className="font-semibold text-emerald-700 dark:text-emerald-400">Campus Gateway Online</span>
             </div>
           </div>
         </div>

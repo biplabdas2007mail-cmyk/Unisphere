@@ -28,7 +28,7 @@ export const AdminFacilityManager: React.FC = () => {
         <div>
           <h3 className="text-sm font-extrabold flex items-center gap-1.5 text-white">
             <Sparkles className="w-4 h-4 text-amber-400" />
-            Campus Spaces & Facility Control (PS07 Pillar #3)
+            Campus Spaces & Facility Control Hub
           </h3>
           <p className="text-xs text-slate-300 mt-1">
             Audit venue reservations, inspect post-session student feedback & ratings, and maintain campus standards.

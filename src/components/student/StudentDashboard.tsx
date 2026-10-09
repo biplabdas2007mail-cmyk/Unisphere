@@ -10,6 +10,7 @@ import { StudentMessTab } from './StudentMessTab';
 import { StudentAcademicTab } from './StudentAcademicTab';
 import { StudentDigitalServicesTab } from './StudentDigitalServicesTab';
 import { StudentAttendanceVisualization } from './StudentAttendanceVisualization';
+import { STUDENT_TIMETABLE, TIMETABLE_METADATA } from '../../data/mockData';
 import { 
   Wrench, 
   FileCheck2, 
@@ -521,25 +522,38 @@ export const StudentDashboard: React.FC = () => {
               <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center space-x-2">
                   <Calendar className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">Today's Next Classroom Session</h3>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">Today's Academic Lecture & Lab Schedule</h3>
                 </div>
                 <button
                   onClick={() => setActiveTab('timetable')}
                   className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
                 >
-                  Full Week Schedule <ArrowRight className="w-3 h-3" />
+                  Full Weekly Matrix <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
 
-              <div className="p-3 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-bold text-indigo-700 dark:text-indigo-300 uppercase">Upcoming at 10:15 AM</span>
-                  <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Database Management Systems Lab (CS305)</h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Software Lab 2, CS Complex • Dr. Meera Nambiar</p>
+              <div className="p-3 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-indigo-700 dark:text-indigo-300 uppercase bg-indigo-100 dark:bg-indigo-900/60 px-2 py-0.5 rounded">
+                      Section S • 09:15 AM - 10:15 AM
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-semibold">
+                      Core Hall: Room No.-A304
+                    </span>
+                  </div>
+                  <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                    DS&AF AI(ALL) – Data Structures & Applied Foundations of AI
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Faculty: <strong className="text-slate-700 dark:text-slate-300">Aliva Haiburu</strong> • Verified from <span className="font-mono text-[11px]">ims.rec.ac.in</span>
+                  </p>
                 </div>
-                <span className="px-2 py-1 rounded-lg bg-indigo-600 text-white font-mono text-xs font-bold">
-                  Lab Session
-                </span>
+                <div className="shrink-0 flex items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-mono text-xs font-bold shadow-2xs">
+                    Theory Class
+                  </span>
+                </div>
               </div>
             </div>
 

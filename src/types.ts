@@ -7,6 +7,8 @@ export interface User {
   role: UserRole;
   avatarUrl: string;
   department: string;
+  institute?: string;
+  university?: string;
   studentId?: string;
   designation?: string;
   hostelBlock?: string;
@@ -120,8 +122,11 @@ export interface TimetableSlot {
   instructor: string;
   time: string;
   room: string;
-  day: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday';
-  type: 'Lecture' | 'Lab' | 'Tutorial';
+  day: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
+  type: 'Lecture' | 'Lab' | 'Tutorial' | 'Break' | 'Training';
+  batch?: 'ALL' | 'GR1' | 'GR2';
+  periodNumber?: number | string;
+  notes?: string;
 }
 
 export interface MessMenuDay {

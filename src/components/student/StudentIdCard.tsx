@@ -2,7 +2,7 @@ import React from 'react';
 import { User } from '../../types';
 import { useCampus } from '../../context/CampusContext';
 import { UniSphereLogo } from '../UniSphereLogo';
-import { QrCode, ShieldCheck, CheckCircle2, ArrowRight, UserCheck } from 'lucide-react';
+import { QrCode, ShieldCheck, CheckCircle2, ArrowRight, UserCheck, Building2, Camera } from 'lucide-react';
 
 interface StudentIdCardProps {
   user: User;
@@ -29,7 +29,7 @@ export const StudentIdCard: React.FC<StudentIdCardProps> = ({ user }) => {
             <div className="text-[9px] font-semibold text-indigo-200 uppercase tracking-wider flex items-center gap-1">
               <span>Campus AI Solutions</span>
               <span>•</span>
-              <span className="text-amber-300 font-bold">Techinnovators</span>
+              <span className="text-amber-300 font-bold">Team Techinnovators</span>
             </div>
           </div>
           <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
@@ -40,13 +40,24 @@ export const StudentIdCard: React.FC<StudentIdCardProps> = ({ user }) => {
       </div>
 
       <div className="flex items-start space-x-4">
-        <div className="relative shrink-0">
+        <div
+          onClick={() => setCurrentView('profile')}
+          title="Click to change or upload student profile photo"
+          className="relative shrink-0 group cursor-pointer"
+        >
           <img
             src={user.avatarUrl}
             alt={user.name}
-            className="w-18 h-18 rounded-xl object-cover ring-2 ring-indigo-400/40 shadow-md"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80';
+            }}
+            className="w-18 h-18 rounded-xl object-cover ring-2 ring-indigo-400/40 group-hover:ring-indigo-300 shadow-md transition-all"
           />
-          <div className="absolute -bottom-1 -right-1 p-0.5 bg-emerald-500 rounded-full ring-2 ring-slate-900">
+          <div className="absolute inset-0 bg-slate-900/60 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-[10px] font-bold">
+            <Camera className="w-4 h-4 mb-0.5 text-indigo-300" />
+            <span>Change</span>
+          </div>
+          <div className="absolute -bottom-1 -right-1 p-0.5 bg-emerald-500 rounded-full ring-2 ring-slate-900 group-hover:scale-110 transition-transform">
             <ShieldCheck className="w-3.5 h-3.5 text-white" />
           </div>
         </div>
@@ -54,6 +65,15 @@ export const StudentIdCard: React.FC<StudentIdCardProps> = ({ user }) => {
         <div className="grow min-w-0">
           <h3 className="text-base font-bold text-white truncate">{user.name}</h3>
           <p className="text-xs text-indigo-200 font-medium truncate">{user.department}</p>
+          <div className="text-[11px] text-amber-300 font-semibold truncate flex items-center gap-1 mt-0.5">
+            <Building2 className="w-3 h-3 text-amber-300 shrink-0" />
+            <span className="truncate">{user.institute || 'Odisha University of Technology and Research (OUTR Bhubaneswar)'}</span>
+          </div>
+          {user.university && (
+            <div className="text-[10px] text-indigo-200/90 truncate flex items-center gap-1 mt-0.5">
+              <span>Affiliation: {user.university}</span>
+            </div>
+          )}
           
           <div className="grid grid-cols-2 gap-2 mt-3 pt-2 border-t border-white/10 text-xs">
             <div>
@@ -77,14 +97,23 @@ export const StudentIdCard: React.FC<StudentIdCardProps> = ({ user }) => {
           </div>
         </div>
 
-        <button
-          onClick={() => setCurrentView('profile')}
-          className="text-xs font-bold text-indigo-300 hover:text-white flex items-center gap-1 transition-colors cursor-pointer self-start sm:self-auto py-1 px-2 rounded-lg hover:bg-white/10"
-        >
-          <UserCheck className="w-3.5 h-3.5" />
-          <span>View Account & History</span>
-          <ArrowRight className="w-3 h-3" />
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button
+            onClick={() => setCurrentView('profile')}
+            className="text-xs font-bold text-amber-300 hover:text-white flex items-center gap-1 transition-colors cursor-pointer py-1 px-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10"
+          >
+            <Camera className="w-3.5 h-3.5" />
+            <span>Change Photo</span>
+          </button>
+          <button
+            onClick={() => setCurrentView('profile')}
+            className="text-xs font-bold text-indigo-300 hover:text-white flex items-center gap-1 transition-colors cursor-pointer py-1 px-2 rounded-lg hover:bg-white/10"
+          >
+            <UserCheck className="w-3.5 h-3.5" />
+            <span>Profile & ID</span>
+            <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -25,19 +25,19 @@ export const PS07OverviewModal: React.FC<PS07OverviewModalProps> = ({ isOpen, on
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto animate-in fade-in">
-      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-8 max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs overflow-y-auto animate-in fade-in">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-8 max-h-[90vh] flex flex-col text-slate-800 dark:text-slate-100">
         
         {/* Header */}
-        <div className="px-6 py-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-start justify-between shrink-0">
+        <div className="px-6 py-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-start justify-between shrink-0 border-b border-indigo-950 dark:border-slate-800">
           <div>
             <div className="flex items-center space-x-2 mb-1.5">
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-amber-400/20 text-amber-300 border border-amber-400/30">
-                Problem Statement ID: PS07
+                Smart Campus Innovation Blueprint
               </span>
               <span className="text-xs text-indigo-200">• Smart India Hackathon / Campus Tech Initiative</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
               How Can Technology Simplify Everyday Campus Life?
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
@@ -53,13 +53,13 @@ export const PS07OverviewModal: React.FC<PS07OverviewModalProps> = ({ isOpen, on
         </div>
 
         {/* Tab switcher */}
-        <div className="px-6 border-b border-slate-200 bg-slate-50 flex space-x-4 shrink-0">
+        <div className="px-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex space-x-4 shrink-0">
           <button
             onClick={() => setActiveTab('comparison')}
             className={`py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 ${
               activeTab === 'comparison'
-                ? 'border-indigo-600 text-indigo-950'
-                : 'border-transparent text-slate-500 hover:text-slate-900'
+                ? 'border-indigo-600 text-indigo-950 dark:text-indigo-400'
+                : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             <Layers className="w-4 h-4" />
@@ -70,8 +70,8 @@ export const PS07OverviewModal: React.FC<PS07OverviewModalProps> = ({ isOpen, on
             onClick={() => setActiveTab('architecture')}
             className={`py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 ${
               activeTab === 'architecture'
-                ? 'border-indigo-600 text-indigo-950'
-                : 'border-transparent text-slate-500 hover:text-slate-900'
+                ? 'border-indigo-600 text-indigo-950 dark:text-indigo-400'
+                : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             <Cpu className="w-4 h-4" />
@@ -82,8 +82,8 @@ export const PS07OverviewModal: React.FC<PS07OverviewModalProps> = ({ isOpen, on
             onClick={() => setActiveTab('metrics')}
             className={`py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center space-x-2 ${
               activeTab === 'metrics'
-                ? 'border-indigo-600 text-indigo-950'
-                : 'border-transparent text-slate-500 hover:text-slate-900'
+                ? 'border-indigo-600 text-indigo-950 dark:text-indigo-400'
+                : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
             <TrendingUp className="w-4 h-4" />
@@ -92,50 +92,50 @@ export const PS07OverviewModal: React.FC<PS07OverviewModalProps> = ({ isOpen, on
         </div>
 
         {/* Content body */}
-        <div className="p-6 overflow-y-auto space-y-6 text-slate-800">
+        <div className="p-6 overflow-y-auto space-y-6 text-slate-800 dark:text-slate-200">
           {activeTab === 'comparison' && (
             <div className="space-y-4">
-              <p className="text-xs text-slate-600">
+              <p className="text-xs text-slate-600 dark:text-slate-400">
                 Traditional campus environments suffer from high paperwork latency, lost requests, and fragmented departments. Here is how technology re-engineers each touchpoint:
               </p>
 
               <div className="grid grid-cols-1 gap-4">
                 {PS07_PILLARS.map((pillar, idx) => (
-                  <div key={pillar.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50">
+                  <div key={pillar.id} className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2">
-                        <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-800 font-bold text-xs flex items-center justify-center">
+                        <span className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 font-bold text-xs flex items-center justify-center">
                           {idx + 1}
                         </span>
-                        <h3 className="font-bold text-sm text-slate-900">{pillar.title}</h3>
+                        <h3 className="font-bold text-sm text-slate-900 dark:text-white">{pillar.title}</h3>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs mt-2">
-                      <div className="p-3 rounded-lg bg-rose-50/60 border border-rose-200/80">
-                        <div className="font-bold text-rose-900 mb-1 flex items-center gap-1.5">
+                      <div className="p-3 rounded-lg bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60">
+                        <div className="font-bold text-rose-900 dark:text-rose-300 mb-1 flex items-center gap-1.5">
                           <span className="w-2 h-2 rounded-full bg-rose-500" />
                           Before: The Paper & Physical Hassle
                         </div>
-                        <p className="text-rose-950/80 leading-relaxed">{pillar.traditional}</p>
+                        <p className="text-rose-950/80 dark:text-rose-200/90 leading-relaxed">{pillar.traditional}</p>
                       </div>
 
-                      <div className="p-3 rounded-lg bg-emerald-50/60 border border-emerald-200/80">
-                        <div className="font-bold text-emerald-900 mb-1 flex items-center gap-1.5">
+                      <div className="p-3 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-900/60">
+                        <div className="font-bold text-emerald-900 dark:text-emerald-300 mb-1 flex items-center gap-1.5">
                           <span className="w-2 h-2 rounded-full bg-emerald-500" />
                           After: The Digital Campus Solution
                         </div>
-                        <p className="text-emerald-950/80 leading-relaxed">{pillar.solution}</p>
+                        <p className="text-emerald-950/80 dark:text-emerald-200/90 leading-relaxed">{pillar.solution}</p>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-200/60 text-[11px]">
-                      <div className="flex items-center space-x-1.5 text-slate-700">
-                        <GraduationCap className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-200/60 dark:border-slate-800 text-[11px]">
+                      <div className="flex items-center space-x-1.5 text-slate-700 dark:text-slate-300">
+                        <GraduationCap className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
                         <span><strong>Student Benefit:</strong> {pillar.studentImpact}</span>
                       </div>
-                      <div className="flex items-center space-x-1.5 text-slate-700">
-                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <div className="flex items-center space-x-1.5 text-slate-700 dark:text-slate-300">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <span><strong>Admin Benefit:</strong> {pillar.adminImpact}</span>
                       </div>
                     </div>
@@ -148,58 +148,58 @@ export const PS07OverviewModal: React.FC<PS07OverviewModalProps> = ({ isOpen, on
           {activeTab === 'architecture' && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl border border-indigo-200 bg-indigo-50/50">
-                  <div className="flex items-center space-x-2 text-indigo-900 font-bold mb-3">
-                    <GraduationCap className="w-5 h-5 text-indigo-600" />
+                <div className="p-4 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-950/40">
+                  <div className="flex items-center space-x-2 text-indigo-900 dark:text-indigo-300 font-bold mb-3">
+                    <GraduationCap className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                     <h3 className="text-sm">Student Experience Layer</h3>
                   </div>
-                  <ul className="space-y-2 text-xs text-indigo-950/90">
+                  <ul className="space-y-2 text-xs text-indigo-950/90 dark:text-indigo-200/90">
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
                       <span><strong>Digital Identity & Outpass:</strong> Generate verifiable gate QR passes without physically tracking down wardens.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
                       <span><strong>One-Tap Grievance Dispatch:</strong> Report hostel maintenance or WiFi issues directly to responsible teams with live SLAs.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
                       <span><strong>Smart Resource Booking:</strong> Book labs, seminar halls, and study spaces in 10 seconds.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
                       <span><strong>Everyday Amenities:</strong> View today’s dining hall meals, crowd capacity levels, and academic schedule.</span>
                     </li>
                   </ul>
                 </div>
 
-                <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/70">
-                  <div className="flex items-center space-x-2 text-slate-900 font-bold mb-3">
-                    <ShieldCheck className="w-5 h-5 text-indigo-700" />
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-850">
+                  <div className="flex items-center space-x-2 text-slate-900 dark:text-white font-bold mb-3">
+                    <ShieldCheck className="w-5 h-5 text-indigo-700 dark:text-indigo-400" />
                     <h3 className="text-sm">Administrator Operations Control</h3>
                   </div>
-                  <ul className="space-y-2 text-xs text-slate-700">
+                  <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span><strong>Live Headcount & Security:</strong> Complete real-time audit log of resident students currently on or off campus.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span><strong>Automated Ticket Dispatch:</strong> Assign electrical and plumbing tickets directly to field staff with progress auditing.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span><strong>Conflict-Free Hall Scheduling:</strong> Prevent double-booked auditoriums and review student club requests.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                       <span><strong>Instant Emergency Broadcasts:</strong> Push critical campus advisories without relying on noisy chat channels.</span>
                     </li>
                   </ul>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-900 text-white text-xs">
+              <div className="p-4 rounded-xl bg-slate-900 dark:bg-slate-950 border border-slate-800 text-white text-xs">
                 <h4 className="font-bold text-amber-300 mb-1 flex items-center gap-1.5">
                   <Zap className="w-4 h-4 text-amber-400" />
                   Synchronized Two-Way Ecosystem
@@ -214,33 +214,33 @@ export const PS07OverviewModal: React.FC<PS07OverviewModalProps> = ({ isOpen, on
           {activeTab === 'metrics' && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                <div className="p-4 rounded-xl bg-indigo-50 border border-indigo-100">
-                  <div className="text-2xl font-extrabold text-indigo-700">85%</div>
-                  <div className="text-[11px] font-semibold text-indigo-900 mt-1">Reduction in Paperwork</div>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Forms & manual registries eliminated</p>
+                <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800">
+                  <div className="text-2xl font-extrabold text-indigo-700 dark:text-indigo-400">85%</div>
+                  <div className="text-[11px] font-semibold text-indigo-900 dark:text-indigo-200 mt-1">Reduction in Paperwork</div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Forms & manual registries eliminated</p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100">
-                  <div className="text-2xl font-extrabold text-emerald-700">4.2x</div>
-                  <div className="text-[11px] font-semibold text-emerald-900 mt-1">Faster Maintenance SLA</div>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Average ticket resolved within 24h</p>
+                <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800">
+                  <div className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-400">4.2x</div>
+                  <div className="text-[11px] font-semibold text-emerald-900 dark:text-emerald-200 mt-1">Faster Maintenance SLA</div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Average ticket resolved within 24h</p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-amber-50 border border-amber-100">
-                  <div className="text-2xl font-extrabold text-amber-700">0 min</div>
-                  <div className="text-[11px] font-semibold text-amber-900 mt-1">Warden Waiting Queue</div>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Digital pass approved remotely</p>
+                <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-800">
+                  <div className="text-2xl font-extrabold text-amber-700 dark:text-amber-400">0 min</div>
+                  <div className="text-[11px] font-semibold text-amber-900 dark:text-amber-200 mt-1">Warden Waiting Queue</div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Digital pass approved remotely</p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-purple-50 border border-purple-100">
-                  <div className="text-2xl font-extrabold text-purple-700">100%</div>
-                  <div className="text-[11px] font-semibold text-purple-900 mt-1">Gate Audit Compliance</div>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Timestamped security verification</p>
+                <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-800">
+                  <div className="text-2xl font-extrabold text-purple-700 dark:text-purple-400">100%</div>
+                  <div className="text-[11px] font-semibold text-purple-900 dark:text-purple-200 mt-1">Gate Audit Compliance</div>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Timestamped security verification</p>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 text-xs leading-relaxed text-slate-700">
-                <h4 className="font-bold text-slate-900 mb-1">Environmental & Productivity Payoff</h4>
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Environmental & Productivity Payoff</h4>
                 <p>
                   A university with 5,000 resident students processes an estimated 120,000 leave slips, maintenance logs, and hall permissions annually. By converting this manual burden into structured digital state machines, staff save over 3,400 hours of manual verification time each academic year while providing students transparent, stress-free campus services.
                 </p>
@@ -250,9 +250,9 @@ export const PS07OverviewModal: React.FC<PS07OverviewModalProps> = ({ isOpen, on
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3.5 bg-slate-100 border-t border-slate-200 flex items-center justify-between shrink-0 text-xs">
-          <span className="text-slate-600 font-medium">
-            UniSphere PS07 Implementation Blueprint
+        <div className="px-6 py-3.5 bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0 text-xs">
+          <span className="text-slate-600 dark:text-slate-400 font-medium">
+            UniSphere Smart Campus Implementation Blueprint
           </span>
           <button
             onClick={onClose}

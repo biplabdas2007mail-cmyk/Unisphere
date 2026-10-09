@@ -160,7 +160,7 @@ export const UniSphereLogo: React.FC<UniSphereLogoProps> = ({
             <span>Campus AI Solutions</span>
             <span className="text-slate-400 dark:text-slate-500">•</span>
             <span className="inline-flex items-center px-1.5 py-0.2 rounded font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-800/70">
-              Techinnovators
+              Team Techinnovators
             </span>
           </div>
         </div>
@@ -188,8 +188,8 @@ export const UniSphereLogo: React.FC<UniSphereLogoProps> = ({
             <div className="flex items-center space-x-1.5 text-xs sm:text-sm font-bold text-indigo-200 tracking-wide">
               <span>Campus AI Solutions</span>
               <span>•</span>
-              <span className="text-amber-300 bg-white/10 px-2 py-0.5 rounded-md border border-white/20">
-                Techinnovators
+              <span className="text-amber-300 bg-white/10 px-2 py-0.5 rounded-md border border-white/20 font-bold">
+                Team Techinnovators
               </span>
             </div>
           </div>
@@ -228,7 +228,7 @@ export const UniSphereLogo: React.FC<UniSphereLogoProps> = ({
           <div className={`font-bold tracking-tight mt-0.5 flex items-center space-x-1.5 ${currentSize.sub} ${isDark ? 'text-slate-300' : 'text-slate-700 dark:text-slate-300'}`}>
             <span>Campus AI Solutions</span>
             <span>•</span>
-            <span className="font-extrabold text-indigo-600 dark:text-indigo-400">Techinnovators</span>
+            <span className="font-extrabold text-indigo-600 dark:text-indigo-400">Team Techinnovators</span>
           </div>
         </div>
       </div>

@@ -42,7 +42,7 @@ export const AdminOutpassManager: React.FC = () => {
         <div>
           <h3 className="text-sm font-bold flex items-center gap-1.5 text-white">
             <Sparkles className="w-4 h-4 text-amber-400" />
-            Warden Outpass Approval & Campus Headcount (PS07 Pillar #2)
+            Warden Outpass Approval & Campus Headcount Console
           </h3>
           <p className="text-xs text-slate-300 mt-0.5">
             Instant paperless leave verification. Approved requests generate cryptographic gate QR passes.

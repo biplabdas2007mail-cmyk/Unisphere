@@ -79,6 +79,8 @@ export interface Translations {
   odishaUniversityBadge: string;
   personalDetailsSection: string;
   personalDetailsDesc: string;
+  instituteLabel: string;
+  universityLabel: string;
   yourNameLabel: string;
   yourNamePlaceholder: string;
   departmentLabel: string;
@@ -100,7 +102,7 @@ export const TRANSLATIONS: Record<LanguageMode, Translations> = {
   odia_mix: {
     campusTitle: 'UniSphere ଓଡ଼ିଶା',
     campusSubtitle: 'Smart Campus OS • Odisha Hub',
-    ps07Badge: 'PS07 କ୍ୟାମ୍ପସ OS',
+    ps07Badge: 'ସ୍ମାର୍ଟ କ୍ୟାମ୍ପସ OS',
     languageName: 'ଓଡ଼ିଆ + English',
     odishaBadge: 'ଓଡ଼ିଶା କ୍ୟାମ୍ପସ (Odisha)',
     
@@ -176,6 +178,8 @@ export const TRANSLATIONS: Record<LanguageMode, Translations> = {
     odishaUniversityBadge: '🏛️ ଓଡ଼ିଶା କ୍ୟାମ୍ପସ ନଲେଜ୍ ସେଣ୍ଟର (Bhubaneswar Hub)',
     personalDetailsSection: 'ବ୍ୟକ୍ତିଗତ ବିବରଣୀ (Personal Details)',
     personalDetailsDesc: 'Campus ID ଓ ପୋର୍ଟାଲ୍ ପାଇଁ ଆପଣଙ୍କ ନାମ ଏବଂ ବିବରଣୀ ଏଠାରେ ଯୋଡ଼ନ୍ତୁ',
+    instituteLabel: 'College / Institute Name (କଲେଜ / ଅନୁଷ୍ଠାନ)',
+    universityLabel: 'Affiliating University (ବିଶ୍ୱବିଦ୍ୟାଳୟ)',
     yourNameLabel: 'Your Name (ଆପଣଙ୍କ ନାମ)',
     yourNamePlaceholder: 'ଆପଣଙ୍କ ସମ୍ପୂର୍ଣ୍ଣ ନାମ ଲେଖନ୍ତୁ (e.g. Biplab Das)',
     departmentLabel: 'Department / ବିଭାଗ',
@@ -196,7 +200,7 @@ export const TRANSLATIONS: Record<LanguageMode, Translations> = {
   en: {
     campusTitle: 'UniSphere Campus',
     campusSubtitle: 'Smart Campus Operating System • Odisha',
-    ps07Badge: 'PS07 Campus OS',
+    ps07Badge: 'Smart Campus OS',
     languageName: 'Pure English',
     odishaBadge: 'Odisha Campus',
     
@@ -272,6 +276,8 @@ export const TRANSLATIONS: Record<LanguageMode, Translations> = {
     odishaUniversityBadge: '🏛️ Odisha University Campus Knowledge Hub',
     personalDetailsSection: 'Personal Details & Identity',
     personalDetailsDesc: 'Add your name and campus details to personalize your portal & ID card',
+    instituteLabel: 'College / Institute Name (Odisha)',
+    universityLabel: 'Affiliating University (Odisha)',
     yourNameLabel: 'Your Name',
     yourNamePlaceholder: 'Enter your full name (e.g. Biplab Das)',
     departmentLabel: 'Department / Branch',
@@ -292,7 +298,7 @@ export const TRANSLATIONS: Record<LanguageMode, Translations> = {
   odia: {
     campusTitle: 'ୟୁନିସ୍ପିଅର ଓଡ଼ିଶା',
     campusSubtitle: 'ସ୍ମାର୍ଟ କ୍ୟାମ୍ପସ ଅପରେଟିଂ ସିଷ୍ଟମ୍ • ଓଡ଼ିଶା',
-    ps07Badge: 'ପିଏସ୦୭ କ୍ୟାମ୍ପସ ଓଏସ',
+    ps07Badge: 'ସ୍ମାର୍ଟ କ୍ୟାମ୍ପସ ଓଏସ',
     languageName: 'ନିଖୁଣ ଓଡ଼ିଆ (Pure Odia)',
     odishaBadge: 'ଓଡ଼ିଶା କ୍ୟାମ୍ପସ',
     
@@ -368,6 +374,8 @@ export const TRANSLATIONS: Record<LanguageMode, Translations> = {
     odishaUniversityBadge: '🏛️ ଓଡ଼ିଶା ବିଶ୍ୱବିଦ୍ୟାଳୟ ଜ୍ଞାନ କେନ୍ଦ୍ର',
     personalDetailsSection: 'ବ୍ୟକ୍ତିଗତ ବିବରଣୀ ଓ ପରିଚୟ',
     personalDetailsDesc: 'କ୍ୟାମ୍ପସ ପୋର୍ଟାଲ୍ ଓ ଆଇଡି କାର୍ଡ ପାଇଁ ଆପଣଙ୍କ ନାମ ଏବଂ ବିବରଣୀ ପ୍ରବେଶ କରନ୍ତୁ',
+    instituteLabel: 'କଲେଜ ଓ ଶିକ୍ଷାନୁଷ୍ଠାନର ନାମ (ଓଡ଼ିଶା)',
+    universityLabel: 'ସମ୍ବନ୍ଧିତ ବିଶ୍ୱବିଦ୍ୟାଳୟ (ଓଡ଼ିଶା)',
     yourNameLabel: 'ଆପଣଙ୍କ ନାମ',
     yourNamePlaceholder: 'ଆପଣଙ୍କ ପୂରା ନାମ ଲେଖନ୍ତୁ (ଉଦା. ବିପ୍ଳବ ଦାସ)',
     departmentLabel: 'ବିଭାଗ / ଶାଖା',
@@ -388,7 +396,7 @@ export const TRANSLATIONS: Record<LanguageMode, Translations> = {
   hi: {
     campusTitle: 'यूनिस्फीयर ओडिशा',
     campusSubtitle: 'स्मार्ट कैंपस ऑपरेटिंग सिस्टम • ओडिशा हब',
-    ps07Badge: 'PS07 कैंपस OS',
+    ps07Badge: 'स्मार्ट कैंपस OS',
     languageName: 'शुद्ध हिन्दी (Pure Hindi)',
     odishaBadge: 'ओडिशा कैंपस',
     
@@ -464,6 +472,8 @@ export const TRANSLATIONS: Record<LanguageMode, Translations> = {
     odishaUniversityBadge: '🏛️ ओडिशा विश्वविद्यालय ज्ञान केंद्र',
     personalDetailsSection: 'व्यक्तिगत विवरण एवं पहचान',
     personalDetailsDesc: 'कैंपस पोर्टल और डिजिटल पहचान पत्र के लिए अपना नाम और विवरण जोड़ें',
+    instituteLabel: 'कॉलेज एवं संस्थान का नाम (ओडिशा)',
+    universityLabel: 'संबद्ध विश्वविद्यालय (ओडिशा)',
     yourNameLabel: 'आपका नाम',
     yourNamePlaceholder: 'अपना पूरा नाम दर्ज करें (उदा. बिप्लब दास)',
     departmentLabel: 'विभाग / शैक्षणिक शाखा',

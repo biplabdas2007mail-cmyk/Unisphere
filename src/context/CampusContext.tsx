@@ -61,10 +61,13 @@ interface CampusContextType {
   setLanguage: (lang: LanguageMode) => void;
   t: Translations;
 
-  // Theme mode (light / dark / system)
+  // Theme mode (light / dark / system) & Accent
   theme: 'light' | 'dark' | 'system';
+  resolvedTheme: 'light' | 'dark';
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
   toggleTheme: () => void;
+  campusAccent: 'indigo' | 'amber' | 'emerald' | 'cyan';
+  setCampusAccent: (accent: 'indigo' | 'amber' | 'emerald' | 'cyan') => void;
 
   // Auth methods
   login: (role: UserRole, customUser?: Partial<User>) => void;
@@ -125,6 +128,7 @@ const STORAGE_KEYS = {
   ANNOUNCEMENTS: 'campus_portal_announcements',
   LANGUAGE: 'campus_portal_language',
   THEME: 'unisphere_theme',
+  ACCENT: 'unisphere_accent',
 };
 
 export const CampusProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -141,6 +145,41 @@ export const CampusProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     return 'light';
   });
 
+  // Track resolved theme (actual active visual mode)
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(STORAGE_KEYS.THEME);
+      if (saved === 'dark') return 'dark';
+      if (saved === 'system') {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+    }
+    return 'light';
+  });
+
+  // Campus visual accent palette (Indigo, Konark Amber, Utkal Emerald, Maritime Cyan)
+  const [campusAccent, setCampusAccentState] = useState<'indigo' | 'amber' | 'emerald' | 'cyan'>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.ACCENT) as 'indigo' | 'amber' | 'emerald' | 'cyan';
+      if (saved && ['indigo', 'amber', 'emerald', 'cyan'].includes(saved)) {
+        return saved;
+      }
+    } catch {
+      // ignore
+    }
+    return 'indigo';
+  });
+
+  const setCampusAccent = (newAccent: 'indigo' | 'amber' | 'emerald' | 'cyan') => {
+    setCampusAccentState(newAccent);
+    try {
+      localStorage.setItem(STORAGE_KEYS.ACCENT, newAccent);
+      document.documentElement.setAttribute('data-accent', newAccent);
+    } catch {
+      // ignore
+    }
+  };
+
   const setTheme = (newTheme: 'light' | 'dark' | 'system') => {
     setThemeState(newTheme);
     try {
@@ -151,7 +190,14 @@ export const CampusProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   };
 
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+    // Cycles properly through: Light -> Dark -> System
+    if (theme === 'light') {
+      setTheme('dark');
+    } else if (theme === 'dark') {
+      setTheme('system');
+    } else {
+      setTheme('light');
+    }
   };
 
   useEffect(() => {
@@ -160,6 +206,7 @@ export const CampusProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     
     const applyTheme = () => {
       const isDark = theme === 'dark' || (theme === 'system' && mediaQuery.matches);
+      setResolvedTheme(isDark ? 'dark' : 'light');
       if (isDark) {
         root.classList.add('dark');
         root.setAttribute('data-theme', 'dark');
@@ -167,6 +214,7 @@ export const CampusProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         root.classList.remove('dark');
         root.setAttribute('data-theme', 'light');
       }
+      root.setAttribute('data-accent', campusAccent);
     };
 
     applyTheme();
@@ -179,12 +227,12 @@ export const CampusProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
     mediaQuery.addEventListener('change', listener);
     return () => mediaQuery.removeEventListener('change', listener);
-  }, [theme]);
+  }, [theme, campusAccent]);
   // Language mode - defaults to Odia & English Mix (as requested)
   const [language, setLanguageState] = useState<LanguageMode>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.LANGUAGE) as LanguageMode;
-      if (saved && (saved === 'odia_mix' || saved === 'en' || saved === 'odia')) {
+      if (saved && (saved === 'odia_mix' || saved === 'en' || saved === 'odia' || saved === 'hi')) {
         return saved;
       }
     } catch {
@@ -202,17 +250,42 @@ export const CampusProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   };
 
-  const t = TRANSLATIONS[language];
+  const t = TRANSLATIONS[language] || TRANSLATIONS.odia_mix;
 
-  // Current user state - defaults to Student demo or stored user
+  // Current user state - defaults to Student (Biplab Das) so the app runs easily out-of-the-box
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.USER);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.id) return parsed;
+      }
     } catch {
       // ignore
     }
-    return null; // Start at login screen, or allow quick 1-click
+    // Auto-provision student session for instant access
+    let customName = 'Biplab Das';
+    let customInstitute = 'Odisha University of Technology and Research (OUTR / Formerly CET Bhubaneswar)';
+    let customUniversity = 'Biju Patnaik University of Technology (BPUT Rourkela)';
+    let customAvatar = DEMO_USERS.student.avatarUrl;
+    try {
+      const savedName = localStorage.getItem('campus_portal_custom_name');
+      if (savedName) customName = savedName;
+      const savedInst = localStorage.getItem('campus_portal_custom_institute');
+      if (savedInst) customInstitute = savedInst;
+      const savedUniv = localStorage.getItem('campus_portal_custom_university');
+      if (savedUniv) customUniversity = savedUniv;
+      const savedAvatar = localStorage.getItem('campus_portal_custom_avatar');
+      if (savedAvatar) customAvatar = savedAvatar;
+    } catch {}
+
+    return {
+      ...DEMO_USERS.student,
+      name: customName,
+      institute: customInstitute,
+      university: customUniversity,
+      avatarUrl: customAvatar
+    };
   });
 
   // Navigation view state
@@ -294,29 +367,49 @@ export const CampusProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     setCriteriaModalOpen(true);
   };
 
-  // Sync to localStorage
+  // Sync to localStorage safely
   useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
-    } else {
-      localStorage.removeItem(STORAGE_KEYS.USER);
+    try {
+      if (currentUser) {
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(currentUser));
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.USER);
+      }
+    } catch {
+      // ignore storage errors
     }
   }, [currentUser]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(tickets));
+    try {
+      localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(tickets));
+    } catch {
+      // ignore
+    }
   }, [tickets]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.OUTPASSES, JSON.stringify(outpasses));
+    try {
+      localStorage.setItem(STORAGE_KEYS.OUTPASSES, JSON.stringify(outpasses));
+    } catch {
+      // ignore
+    }
   }, [outpasses]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.FACILITIES, JSON.stringify(facilities));
+    try {
+      localStorage.setItem(STORAGE_KEYS.FACILITIES, JSON.stringify(facilities));
+    } catch {
+      // ignore
+    }
   }, [facilities]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.ANNOUNCEMENTS, JSON.stringify(announcements));
+    try {
+      localStorage.setItem(STORAGE_KEYS.ANNOUNCEMENTS, JSON.stringify(announcements));
+    } catch {
+      // ignore
+    }
   }, [announcements]);
 
   const login = (role: UserRole, customUser?: Partial<User>) => {
@@ -336,12 +429,41 @@ export const CampusProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
   const switchRole = (newRole: UserRole) => {
     const baseUser = DEMO_USERS[newRole];
-    setCurrentUser(baseUser);
+    let customUser = { ...baseUser };
+    if (newRole === 'student') {
+      try {
+        const savedAvatar = localStorage.getItem('campus_portal_custom_avatar');
+        if (savedAvatar) customUser.avatarUrl = savedAvatar;
+        const savedName = localStorage.getItem('campus_portal_custom_name');
+        if (savedName) customUser.name = savedName;
+        const savedInst = localStorage.getItem('campus_portal_custom_institute');
+        if (savedInst) customUser.institute = savedInst;
+        const savedUniv = localStorage.getItem('campus_portal_custom_university');
+        if (savedUniv) customUser.university = savedUniv;
+      } catch {}
+    }
+    setCurrentUser(customUser);
     setCurrentView('dashboard');
   };
 
   const updateUserProfile = (updates: Partial<User>) => {
-    setCurrentUser(prev => prev ? { ...prev, ...updates } : null);
+    setCurrentUser(prev => {
+      if (!prev) return null;
+      const updated = { ...prev, ...updates };
+      try {
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updated));
+        if (updates.name) localStorage.setItem('campus_portal_custom_name', updates.name);
+        if (updates.institute) localStorage.setItem('campus_portal_custom_institute', updates.institute);
+        if (updates.university) localStorage.setItem('campus_portal_custom_university', updates.university);
+        if (updates.department) localStorage.setItem('campus_portal_custom_dept', updates.department);
+        if (updates.phone) localStorage.setItem('campus_portal_custom_phone', updates.phone);
+        if (updates.hostelBlock) localStorage.setItem('campus_portal_custom_hostel', updates.hostelBlock);
+        if (updates.roomNo) localStorage.setItem('campus_portal_custom_room', updates.roomNo);
+        if (updates.designation) localStorage.setItem('campus_portal_custom_desig', updates.designation);
+        if (updates.avatarUrl) localStorage.setItem('campus_portal_custom_avatar', updates.avatarUrl);
+      } catch {}
+      return updated;
+    });
   };
 
   // Ticket handlers
@@ -627,12 +749,16 @@ export const CampusProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     setAssignments(INITIAL_ASSIGNMENTS);
     setLibraryBooks(LIBRARY_BOOKS);
     setCampusEvents(CAMPUS_EVENTS);
-    localStorage.removeItem(STORAGE_KEYS.TICKETS);
-    localStorage.removeItem(STORAGE_KEYS.OUTPASSES);
-    localStorage.removeItem(STORAGE_KEYS.FACILITIES);
-    localStorage.removeItem(STORAGE_KEYS.ANNOUNCEMENTS);
-    localStorage.removeItem('campus_portal_certificates');
-    localStorage.removeItem('campus_portal_assignments');
+    try {
+      localStorage.removeItem(STORAGE_KEYS.TICKETS);
+      localStorage.removeItem(STORAGE_KEYS.OUTPASSES);
+      localStorage.removeItem(STORAGE_KEYS.FACILITIES);
+      localStorage.removeItem(STORAGE_KEYS.ANNOUNCEMENTS);
+      localStorage.removeItem('campus_portal_certificates');
+      localStorage.removeItem('campus_portal_assignments');
+    } catch {
+      // ignore
+    }
   };
 
   return (
@@ -661,8 +787,11 @@ export const CampusProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setLanguage,
         t,
         theme,
+        resolvedTheme,
         setTheme,
         toggleTheme,
+        campusAccent,
+        setCampusAccent,
         login,
         logout,
         switchRole,

@@ -37,7 +37,7 @@ export const AdminBroadcastManager: React.FC = () => {
         <div>
           <h3 className="text-sm font-bold flex items-center gap-1.5 text-white">
             <Sparkles className="w-4 h-4 text-amber-400" />
-            University Broadcast & Emergency Dispatch (PS07 Pillar #4)
+            University Broadcast & Emergency Dispatch
           </h3>
           <p className="text-xs text-slate-300 mt-0.5">
             Push critical notices, storm warnings, or exam updates across all student dashboards within seconds.

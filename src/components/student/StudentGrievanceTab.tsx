@@ -110,7 +110,7 @@ export const StudentGrievanceTab: React.FC = () => {
         <div>
           <h3 className="text-sm font-bold text-indigo-950 dark:text-indigo-200 flex items-center gap-1.5">
             <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-            Digital Grievance & SLA Helpdesk (PS07 Pillar #1)
+            Digital Grievance & Rapid SLA Helpdesk
           </h3>
           <p className="text-xs text-indigo-800/80 dark:text-indigo-300/80 mt-0.5">
             Report broken Wi-Fi, plumbing, electrical, or lab gear in under 30 seconds. Track work-order dispatch in real time.
